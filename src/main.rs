@@ -7,12 +7,12 @@ fn main() {
     let mut imgbuf = image::ImageBuffer::new(100, 100);
 
     {
-        let mut pixel = imgbuf.get_pixel_mut(50, 50);
-
-        *pixel = image::Luma([255 as u8]);
+        for i in 0..100 {
+            imgbuf.put_pixel(30, i, image::Rgb([255 as u8, 255 as u8, 255 as u8]));
+        }
     }
 
     let ref mut fout = File::create(&Path::new("output.png")).unwrap();
 
-    let _  = image::ImageLuma8(imgbuf).save(fout, image::PNG);
+    let _  = image::ImageRgb8(imgbuf).save(fout, image::PNG);
 }
