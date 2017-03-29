@@ -1,0 +1,6 @@
+[package]
+name = "arustid"
+version = "0.1.0"
+authors = ["Simon Andersson <simon.asker@posteo.net>"]
+
+[dependencies]
