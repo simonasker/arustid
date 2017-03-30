@@ -3,41 +3,42 @@ extern crate image;
 use std::fs::File;
 use std::path::Path;
 
+struct Point {
+    x: u32,
+    y: u32,
+}
+
 struct Turtle {
-    pos_x: u32,
-    pos_y: u32,
+    position: Point,
     angle: u32,
 }
 
 impl Turtle {
-    fn new(pos_x: u32, pos_y: u32, angle: u32) -> Turtle {
+    fn new(position: Point, angle: u32) -> Turtle {
         Turtle {
-            pos_x: pos_x,
-            pos_y: pos_y,
+            position: position,
             angle: angle,
         }
     }
 
-    fn move_forward(&mut self, steps: u32) -> (u32, u32) {
-        let new_x = self.pos_x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
-        let new_y = self.pos_y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
-        self.pos_x = new_x as u32;
-        self.pos_y = new_y as u32;
-        (self.pos_x, self.pos_y)
+    fn move_forward(&mut self, steps: u32) -> &Point {
+        let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
+        let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
+        self.position = Point { x: new_x as u32, y: new_y as u32 };
+        &self.position
     }
-
-
 }
+
 
 fn main() {
     let base_pixel = image::Rgb([255, 255, 255]);
-    let mut imgbuf = image::ImageBuffer::from_pixel(100, 100, base_pixel);
+    let mut imgbuf = image::ImageBuffer::from_pixel(500, 500, base_pixel);
 
-    let mut turtle = Turtle::new(50, 50, 0);
+    let mut turtle = Turtle::new(Point { x: 250, y: 250 }, 0);
 
-    imgbuf.put_pixel(turtle.pos_x, turtle.pos_y, image::Rgb([0, 0, 0]));
-    turtle.move_forward(30);
-    imgbuf.put_pixel(turtle.pos_x, turtle.pos_y, image::Rgb([0, 0, 0]));
+    imgbuf.put_pixel(turtle.position.x, turtle.position.y, image::Rgb([0, 0, 0]));
+    turtle.move_forward(100);
+    imgbuf.put_pixel(turtle.position.x, turtle.position.y, image::Rgb([0, 0, 0]));
 
     let ref mut fout = File::create(&Path::new("output.png")).unwrap();
 
