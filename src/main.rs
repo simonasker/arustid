@@ -3,7 +3,7 @@ extern crate image;
 use std::fs::File;
 use std::path::Path;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 struct Point {
     x: u32,
     y: u32,
@@ -34,6 +34,20 @@ impl Turtle {
         self.position = Point::new(new_x as u32, new_y as u32);
         &self.position
     }
+
+    fn process_sequence(&mut self, sequence: String) -> Vec<Point> {
+        let mut result = vec![self.position.clone()];
+        for c in sequence.chars() {
+            match c {
+                'F' => {
+                    self.move_forward(15);
+                    result.push(self.position.clone());
+                },
+                _ => {},
+            }
+        }
+        result
+    }
 }
 
 fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
@@ -53,18 +67,29 @@ fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
 }
 
 
+
 fn main() {
     let base_pixel = image::Rgb([255, 255, 255]);
     let mut imgbuf = image::ImageBuffer::from_pixel(500, 500, base_pixel);
 
     let mut turtle = Turtle::new(Point::new(250, 250), 0);
 
-    let old_position = turtle.position.clone();
-    let new_position = turtle.move_forward(100);
+    let path = turtle.process_sequence(String::from("FFFFF"));
+    let mut path_iter = path.iter();
 
-    for Point { x, y } in calculate_line(&old_position, new_position) {
-        imgbuf.put_pixel(x, y, image::Rgb([0, 0, 0]));
+    let prev = path_iter.next().unwrap();
+
+    loop {
+        let current = match path_iter.next() {
+            Some(p) => p,
+            None => break,
+        };
+
+        for Point { x, y } in calculate_line(&prev, &current) {
+            imgbuf.put_pixel(x, y, image::Rgb([0, 0, 0]));
+        }
     }
+
 
     let ref mut fout = File::create(&Path::new("output.png")).unwrap();
 
