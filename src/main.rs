@@ -82,15 +82,31 @@ fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
     line
 }
 
+fn iterate_sequence(sequence: String) -> String {
+    let mut result = String::new();
+    for c in sequence.chars() {
+        match c {
+            'F' => result.push_str("F+F-F-F+F"),
+            c @ _ => result.push(c),
+        }
+    }
 
+    result
+}
 
 fn main() {
     let base_pixel = image::Rgb([255, 255, 255]);
     let mut imgbuf = image::ImageBuffer::from_pixel(500, 500, base_pixel);
 
-    let mut turtle = Turtle::new(Point::new(100, 100), 0);
+    let mut turtle = Turtle::new(Point::new(0, 250), 0);
 
-    let path = turtle.process_sequence(String::from("F+F-F-F+F"));
+    let mut sequence = String::from("F+F-F-F+F");
+
+    for _ in 0..2 {
+        sequence = iterate_sequence(sequence);
+    }
+
+    let path = turtle.process_sequence(sequence);
     let mut path_iter = path.iter();
 
     let mut prev = path_iter.next().unwrap();
@@ -108,7 +124,6 @@ fn main() {
 
         prev = current;
     }
-
 
     let ref mut fout = File::create(&Path::new("output.png")).unwrap();
 
