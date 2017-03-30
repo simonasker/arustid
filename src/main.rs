@@ -2,46 +2,62 @@ extern crate image;
 
 use std::fs::File;
 use std::path::Path;
+use std::cmp;
 
 #[derive(Debug, Clone)]
 struct Point {
-    x: u32,
-    y: u32,
+    x: i32,
+    y: i32,
 }
 
 impl Point {
-    fn new(x: u32, y: u32) -> Point {
+    fn new(x: i32, y: i32) -> Point {
         Point { x: x, y: y }
     }
 }
 
 struct Turtle {
     position: Point,
-    angle: u32,
+    angle: i32,
 }
 
 impl Turtle {
-    fn new(position: Point, angle: u32) -> Turtle {
+    fn new(position: Point, angle: i32) -> Turtle {
         Turtle {
             position: position,
             angle: angle,
         }
     }
 
-    fn move_forward(&mut self, steps: u32) -> &Point {
+    fn move_forward(&mut self, steps: i32) -> &Point {
         let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
         let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
-        self.position = Point::new(new_x as u32, new_y as u32);
+        self.position = Point::new(new_x as i32, new_y as i32);
         &self.position
+    }
+
+    fn turn_left(&mut self, angle: i32) {
+        self.angle = (self.angle - angle) % 360;
+    }
+
+    fn turn_right(&mut self, angle: i32) {
+        self.angle = (self.angle + angle) % 360;
     }
 
     fn process_sequence(&mut self, sequence: String) -> Vec<Point> {
         let mut result = vec![self.position.clone()];
         for c in sequence.chars() {
+            println!("{}", self.angle);
             match c {
                 'F' => {
-                    self.move_forward(15);
+                    self.move_forward(10);
                     result.push(self.position.clone());
+                },
+                '+' => {
+                    self.turn_left(90);
+                },
+                '-' => {
+                    self.turn_right(90);
                 },
                 _ => {},
             }
@@ -53,11 +69,11 @@ impl Turtle {
 fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
     let mut line = Vec::new();
     if p1.x == p2.x {
-        for y in p1.y..p2.y {
+        for y in cmp::min(p1.y, p2.y)..cmp::max(p1.y, p2.y) {
             line.push(Point::new(p1.x, y));
         }
     } else if p1.y == p2.y {
-        for x in p1.x..p2.x {
+        for x in cmp::min(p1.x, p2.x)..cmp::max(p1.x, p2.x) {
             line.push(Point::new(x, p1.y));
         }
     } else {
@@ -72,22 +88,25 @@ fn main() {
     let base_pixel = image::Rgb([255, 255, 255]);
     let mut imgbuf = image::ImageBuffer::from_pixel(500, 500, base_pixel);
 
-    let mut turtle = Turtle::new(Point::new(250, 250), 0);
+    let mut turtle = Turtle::new(Point::new(100, 100), 0);
 
-    let path = turtle.process_sequence(String::from("FFFFF"));
+    let path = turtle.process_sequence(String::from("F+F-F-F+F"));
     let mut path_iter = path.iter();
 
-    let prev = path_iter.next().unwrap();
+    let mut prev = path_iter.next().unwrap();
 
     loop {
         let current = match path_iter.next() {
             Some(p) => p,
             None => break,
         };
+        println!("{:?} -> {:?}", prev, current);
 
         for Point { x, y } in calculate_line(&prev, &current) {
-            imgbuf.put_pixel(x, y, image::Rgb([0, 0, 0]));
+            imgbuf.put_pixel(x as u32, y as u32, image::Rgb([0, 0, 0]));
         }
+
+        prev = current;
     }
 
 
