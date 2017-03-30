@@ -9,6 +9,12 @@ struct Point {
     y: u32,
 }
 
+impl Point {
+    fn new(x: u32, y: u32) -> Point {
+        Point { x: x, y: y }
+    }
+}
+
 struct Turtle {
     position: Point,
     angle: u32,
@@ -25,7 +31,7 @@ impl Turtle {
     fn move_forward(&mut self, steps: u32) -> &Point {
         let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
         let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
-        self.position = Point { x: new_x as u32, y: new_y as u32 };
+        self.position = Point::new(new_x as u32, new_y as u32);
         &self.position
     }
 }
@@ -34,11 +40,11 @@ fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
     let mut line = Vec::new();
     if p1.x == p2.x {
         for y in p1.y..p2.y {
-            line.push(Point { x: p1.x, y: y });
+            line.push(Point::new(p1.x, y));
         }
     } else if p1.y == p2.y {
         for x in p1.x..p2.x {
-            line.push(Point { x: x, y: p1.y });
+            line.push(Point::new(x, p1.y));
         }
     } else {
         panic!("Line not straight");
@@ -51,7 +57,7 @@ fn main() {
     let base_pixel = image::Rgb([255, 255, 255]);
     let mut imgbuf = image::ImageBuffer::from_pixel(500, 500, base_pixel);
 
-    let mut turtle = Turtle::new(Point { x: 250, y: 250 }, 0);
+    let mut turtle = Turtle::new(Point::new(250, 250), 0);
 
     let old_position = turtle.position.clone();
     let new_position = turtle.move_forward(100);
