@@ -47,7 +47,6 @@ impl Turtle {
     fn process_sequence(&mut self, sequence: String) -> Vec<Point> {
         let mut result = vec![self.position.clone()];
         for c in sequence.chars() {
-            println!("{}", self.angle);
             match c {
                 'F' => {
                     self.move_forward(10);
@@ -116,7 +115,6 @@ fn main() {
             Some(p) => p,
             None => break,
         };
-        println!("{:?} -> {:?}", prev, current);
 
         for Point { x, y } in calculate_line(&prev, &current) {
             imgbuf.put_pixel(x as u32, y as u32, image::Rgb([0, 0, 0]));
