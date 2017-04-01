@@ -11,7 +11,6 @@ use std::fs::File;
 use std::path::Path;
 
 pub struct Config {
-    start_sequence: String,
     iterations: u32,
     output_filename: String,
 }
@@ -21,13 +20,11 @@ impl Config {
         args.next();
 
         Ok(Config {
-               start_sequence: String::from("F"),
-               iterations: 3,
+               iterations: 4,
                output_filename: String::from("output.png"),
            })
     }
 }
-
 
 pub fn run(config: Config) -> Result<(), &'static str> {
     let base_pixel = image::Rgb([255, 255, 255]);
@@ -43,11 +40,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
         angle: 90,
     };
 
-    let mut sequence = String::from(config.start_sequence);
-
-    for _ in 0..config.iterations {
-        sequence = lsystem::iterate(sequence);
-    }
+    let sequence = koch.generate(config.iterations);
 
     let path = turtle.process_sequence(sequence);
     let mut path_iter = path.iter();

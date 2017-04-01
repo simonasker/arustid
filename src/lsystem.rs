@@ -1,4 +1,3 @@
-
 pub struct Rule {
     pub predecessor: char,
     pub successor: String,
@@ -21,14 +20,31 @@ pub struct LSystem {
     pub angle: u16,
 }
 
-
-pub fn iterate(sequence: String) -> String {
-    let mut result = String::new();
-    for c in sequence.chars() {
-        match c {
-            'F' => result.push_str("F+F-F-F+F"),
-            c @ _ => result.push(c),
+impl LSystem {
+    pub fn generate(&self, iterations: u32) -> String {
+        let mut result = self.axiom.clone();
+        for _ in 0..iterations {
+            result = self.iterate(result);
         }
+        result
     }
-    result
+
+    pub fn iterate(&self, sequence: String) -> String {
+        let mut result = String::new();
+        for c in sequence.chars() {
+            // TODO This could probably be nicer
+            let mut applied_rule = false;
+            for rule in &self.rules {
+                if c == rule.predecessor {
+                    result.push_str(&rule.successor);
+                    applied_rule = true;
+                }
+
+                if !applied_rule {
+                    result.push(c);
+                }
+            }
+        }
+        result
+    }
 }
