@@ -1,15 +1,24 @@
 
-struct Rule {
-    predecessor: char,
-    successor: String,
+pub struct Rule {
+    pub predecessor: char,
+    pub successor: String,
 }
 
-struct System {
-    variables: Vec<char>,
-    constants: Vec<char>,
-    axiom: String,
-    rules: Vec<Rule>,
-    angle: u16,
+impl Rule {
+    pub fn new(predecessor: char, successor: &str) -> Rule {
+        Rule {
+            predecessor: predecessor,
+            successor: String::from(successor),
+        }
+    }
+}
+
+pub struct LSystem {
+    pub variables: Vec<char>,
+    pub constants: Vec<char>,
+    pub axiom: String,
+    pub rules: Vec<Rule>,
+    pub angle: u16,
 }
 
 

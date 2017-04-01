@@ -1,7 +1,7 @@
 extern crate arustid;
 
-use std::process;
 use std::env;
+use std::process;
 
 fn main() {
 
