@@ -43,3 +43,10 @@ pub fn find_limits(path: &Vec<Point>) -> (i32, i32, i32, i32) {
 
     (min_x, max_x, min_y, max_y)
 }
+
+pub fn translate(path: &mut Vec<Point>, dx: i32, dy: i32) {
+    for ref mut p in path {
+        p.x += dx;
+        p.y += dy;
+    }
+}

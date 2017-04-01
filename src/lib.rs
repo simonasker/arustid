@@ -52,12 +52,16 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     let sequence = _dragon.generate(config.iterations);
 
     let mut turtle = turtle::Turtle::new(Point::new(500, 250), _dragon.angle as i32);
-    let path = turtle.process_sequence(sequence);
+    let mut path = turtle.process_sequence(sequence);
 
     let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);
+    let width = max_x - min_x;
+    let height = max_y - min_y;
 
     println!("min_x: {}, max_x: {}", min_x, max_x);
     println!("min_y: {}, max_y: {}", min_y, max_y);
+
+    geom::translate(&mut path, 100, 100);
 
     let mut path_iter = path.iter();
 
