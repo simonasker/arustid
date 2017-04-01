@@ -27,3 +27,19 @@ pub fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
     }
     line
 }
+
+pub fn find_limits(path: &Vec<Point>) -> (i32, i32, i32, i32) {
+    let mut min_x = i32::max_value();
+    let mut max_x = i32::min_value();
+    let mut min_y = i32::max_value();
+    let mut max_y = i32::min_value();
+
+    for &Point { x, y } in path {
+        min_x = cmp::min(min_x, x);
+        max_x = cmp::max(max_x, x);
+        min_y = cmp::min(min_y, y);
+        max_y = cmp::max(max_y, y);
+    }
+
+    (min_x, max_x, min_y, max_y)
+}

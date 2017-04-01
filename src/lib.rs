@@ -20,11 +20,13 @@ impl Config {
         args.next();
 
         Ok(Config {
-               iterations: 10,
+               iterations: 4,
                output_filename: String::from("output.png"),
            })
     }
 }
+
+
 
 pub fn run(config: Config) -> Result<(), &'static str> {
     let base_pixel = image::Rgb([255, 255, 255]);
@@ -51,6 +53,12 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let mut turtle = turtle::Turtle::new(Point::new(500, 250), _dragon.angle as i32);
     let path = turtle.process_sequence(sequence);
+
+    let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);
+
+    println!("min_x: {}, max_x: {}", min_x, max_x);
+    println!("min_y: {}, max_y: {}", min_y, max_y);
+
     let mut path_iter = path.iter();
 
     let mut prev = path_iter.next().unwrap();
