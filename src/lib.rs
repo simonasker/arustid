@@ -20,7 +20,7 @@ impl Config {
         args.next();
 
         Ok(Config {
-            start_sequence: String::from("F+F-F-F+F"),
+            start_sequence: String::from("F"),
             iterations: 3,
             output_filename: String::from("output.png"),
         })
@@ -36,7 +36,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let mut sequence = String::from(config.start_sequence);
 
-    for _ in 0..config.iterations-1 {
+    for _ in 0..config.iterations {
         sequence = lsystem::iterate(sequence);
     }
 
