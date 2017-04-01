@@ -4,20 +4,39 @@ mod turtle;
 mod geom;
 mod lsystem;
 
+use std::env;
 use geom::Point;
 use std::fs::File;
 use std::path::Path;
 
+pub struct Config {
+    start_sequence: String,
+    iterations: u32,
+    output_filename: String,
+}
 
-pub fn run() -> Result<(), &'static str> {
+impl Config {
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
+        args.next();
+
+        Ok(Config {
+            start_sequence: String::from("F+F-F-F+F"),
+            iterations: 3,
+            output_filename: String::from("output.png"),
+        })
+    }
+}
+
+
+pub fn run(config: Config) -> Result<(), &'static str> {
     let base_pixel = image::Rgb([255, 255, 255]);
     let mut imgbuf = image::ImageBuffer::from_pixel(500, 500, base_pixel);
 
     let mut turtle = turtle::Turtle::new(Point::new(0, 250), 0);
 
-    let mut sequence = String::from("F+F-F-F+F");
+    let mut sequence = String::from(config.start_sequence);
 
-    for _ in 0..2 {
+    for _ in 0..config.iterations-1 {
         sequence = lsystem::iterate(sequence);
     }
 
@@ -39,7 +58,7 @@ pub fn run() -> Result<(), &'static str> {
         prev = current;
     }
 
-    let ref mut fout = File::create(&Path::new("output.png")).unwrap();
+    let ref mut fout = File::create(&Path::new(&config.output_filename)).unwrap();
 
     let _ = image::ImageRgb8(imgbuf).save(fout, image::PNG);
 
