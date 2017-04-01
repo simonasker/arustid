@@ -20,19 +20,13 @@ impl Config {
         args.next();
 
         Ok(Config {
-               iterations: 4,
+               iterations: 10,
                output_filename: String::from("output.png"),
            })
     }
 }
 
-
-
 pub fn run(config: Config) -> Result<(), &'static str> {
-    let base_pixel = image::Rgb([255, 255, 255]);
-    let mut imgbuf = image::ImageBuffer::from_pixel(1000, 500, base_pixel);
-
-
     let _koch = LSystem {
         variables: vec!['F'],
         constants: vec!['+', '-'],
@@ -55,17 +49,23 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     let mut path = turtle.process_sequence(sequence);
 
     let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);
-    let width = max_x - min_x;
-    let height = max_y - min_y;
 
-    println!("min_x: {}, max_x: {}", min_x, max_x);
-    println!("min_y: {}, max_y: {}", min_y, max_y);
+    let margin = 20;
 
-    geom::translate(&mut path, 100, 100);
+    let dx = -min_x + margin;
+    let dy = -min_y + margin;
+
+    let width = max_x - min_x + 2 * margin;
+    let height = max_y - min_y + 2 * margin;
+
+    geom::translate(&mut path, dx, dy);
 
     let mut path_iter = path.iter();
 
     let mut prev = path_iter.next().unwrap();
+
+    let base_pixel = image::Rgb([255, 255, 255]);
+    let mut imgbuf = image::ImageBuffer::from_pixel(width as u32, height as u32, base_pixel);
 
     loop {
         let current = match path_iter.next() {
