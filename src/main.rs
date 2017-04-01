@@ -1,8 +1,8 @@
 extern crate image;
 
+use std::cmp;
 use std::fs::File;
 use std::path::Path;
-use std::cmp;
 
 #[derive(Debug, Clone)]
 struct Point {
@@ -52,14 +52,14 @@ impl Turtle {
                 'F' => {
                     self.move_forward(10);
                     result.push(self.position.clone());
-                },
+                }
                 '+' => {
                     self.turn_left(90);
-                },
+                }
                 '-' => {
                     self.turn_right(90);
-                },
-                _ => {},
+                }
+                _ => {}
             }
         }
         result
@@ -127,5 +127,5 @@ fn main() {
 
     let ref mut fout = File::create(&Path::new("output.png")).unwrap();
 
-    let _  = image::ImageRgb8(imgbuf).save(fout, image::PNG);
+    let _ = image::ImageRgb8(imgbuf).save(fout, image::PNG);
 }
