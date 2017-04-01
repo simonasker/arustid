@@ -20,7 +20,7 @@ impl Config {
         args.next();
 
         Ok(Config {
-               iterations: 4,
+               iterations: 10,
                output_filename: String::from("output.png"),
            })
     }
@@ -30,9 +30,8 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     let base_pixel = image::Rgb([255, 255, 255]);
     let mut imgbuf = image::ImageBuffer::from_pixel(1000, 500, base_pixel);
 
-    let mut turtle = turtle::Turtle::new(Point::new(0, 450), 0);
 
-    let koch = LSystem {
+    let _koch = LSystem {
         variables: vec!['F'],
         constants: vec!['+', '-'],
         axiom: String::from("F"),
@@ -40,8 +39,17 @@ pub fn run(config: Config) -> Result<(), &'static str> {
         angle: 90,
     };
 
-    let sequence = koch.generate(config.iterations);
+    let _dragon = LSystem {
+        variables: vec!['X', 'Y'],
+        constants: vec!['F', '+', '-'],
+        axiom: String::from("FX"),
+        rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
+        angle: 90,
+    };
 
+    let sequence = _dragon.generate(config.iterations);
+
+    let mut turtle = turtle::Turtle::new(Point::new(500, 250), _dragon.angle as i32);
     let path = turtle.process_sequence(sequence);
     let mut path_iter = path.iter();
 

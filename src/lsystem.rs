@@ -39,10 +39,9 @@ impl LSystem {
                     result.push_str(&rule.successor);
                     applied_rule = true;
                 }
-
-                if !applied_rule {
-                    result.push(c);
-                }
+            }
+            if !applied_rule {
+                result.push(c);
             }
         }
         result
