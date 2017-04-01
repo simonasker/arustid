@@ -20,7 +20,7 @@ impl Config {
         args.next();
 
         Ok(Config {
-               iterations: 10,
+               iterations: 9,
                output_filename: String::from("output.png"),
            })
     }
@@ -45,7 +45,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let sequence = _dragon.generate(config.iterations);
 
-    let mut turtle = turtle::Turtle::new(Point::new(500, 250), _dragon.angle as i32);
+    let mut turtle = turtle::Turtle::new(Point::new(500, 250), 0);
     let mut path = turtle.process_sequence(sequence);
 
     let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);
