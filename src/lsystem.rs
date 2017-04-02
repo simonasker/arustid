@@ -45,3 +45,22 @@ impl LSystem {
         result
     }
 }
+
+pub fn get_system(name: &str) -> LSystem {
+    match name {
+        "koch" => LSystem {
+            axiom: String::from("F"),
+            rules: vec![Rule::new('F', "F+F-F-F+F")],
+            angle: 90,
+        },
+        "dragon" => LSystem {
+            axiom: String::from("FX"),
+            rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
+            angle: 90,
+        },
+        _ => {
+            // TODO Handle this nicer
+            panic!("No such system");
+        },
+    }
+}

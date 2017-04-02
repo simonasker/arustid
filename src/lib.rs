@@ -5,14 +5,12 @@ mod geom;
 mod lsystem;
 
 use geom::Point;
-use lsystem::{LSystem, Rule};
 use std::env;
 use std::fs::File;
 use std::path::Path;
 
 pub struct Config {
     mode: String,
-    axiom: String,
     iterations: u32,
     output_filename: String,
 }
@@ -22,21 +20,12 @@ impl Config {
         args.next();
 
         let mode = args.next().unwrap_or(String::from(""));
-        match mode.as_ref() {
-            "turtle" => { println!("Turtle graphics") },
-            "koch" => { println!("Koch curve") },
-            "dragon" => { println!("Dragon curve") },
-            _ => {},
-        }
-
-        let axiom = args.next().unwrap_or(String::from(""));
 
         let iterations = args.next().unwrap_or(String::from("1"));
         let iterations = iterations.parse::<u32>().unwrap();
 
         Ok(Config {
                mode: mode,
-               axiom: axiom,
                iterations: iterations,
                output_filename: String::from("output.png"),
            })
@@ -44,19 +33,11 @@ impl Config {
 }
 
 pub fn run(config: Config) -> Result<(), &'static str> {
-    let _koch = LSystem {
-        axiom: String::from("F"),
-        rules: vec![Rule::new('F', "F+F-F-F+F")],
-        angle: 90,
-    };
+    let system = lsystem::get_system(&config.mode);
 
-    let _dragon = LSystem {
-        axiom: String::from("FX"),
-        rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
-        angle: 90,
-    };
+    let sequence = system.generate(config.iterations);
 
-    let sequence = _dragon.generate(config.iterations);
+    println!("{}", sequence);
 
     let mut turtle = turtle::Turtle::new(Point::new(0, 0), 0);
     let mut path = turtle.process_sequence(sequence);
