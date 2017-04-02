@@ -11,6 +11,8 @@ use std::fs::File;
 use std::path::Path;
 
 pub struct Config {
+    mode: String,
+    axiom: String,
     iterations: u32,
     output_filename: String,
 }
@@ -27,8 +29,15 @@ impl Config {
             _ => {},
         }
 
+        let axiom = args.next().unwrap_or(String::from(""));
+
+        let iterations = args.next().unwrap_or(String::from("1"));
+        let iterations = iterations.parse::<u32>().unwrap();
+
         Ok(Config {
-               iterations: 10,
+               mode: mode,
+               axiom: axiom,
+               iterations: iterations,
                output_filename: String::from("output.png"),
            })
     }
