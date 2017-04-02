@@ -13,8 +13,6 @@ impl Rule {
 }
 
 pub struct LSystem {
-    pub variables: Vec<char>,
-    pub constants: Vec<char>,
     pub axiom: String,
     pub rules: Vec<Rule>,
     pub angle: u16,

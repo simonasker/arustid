@@ -28,16 +28,12 @@ impl Config {
 
 pub fn run(config: Config) -> Result<(), &'static str> {
     let _koch = LSystem {
-        variables: vec!['F'],
-        constants: vec!['+', '-'],
         axiom: String::from("F"),
         rules: vec![Rule::new('F', "F+F-F-F+F")],
         angle: 90,
     };
 
     let _dragon = LSystem {
-        variables: vec!['X', 'Y'],
-        constants: vec!['F', '+', '-'],
         axiom: String::from("FX"),
         rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
         angle: 90,
