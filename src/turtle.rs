@@ -2,11 +2,11 @@ use geom::Point;
 
 pub struct Turtle {
     position: Point,
-    angle: i32,
+    angle: i16,
 }
 
 impl Turtle {
-    pub fn new(position: Point, angle: i32) -> Turtle {
+    pub fn new(position: Point, angle: i16) -> Turtle {
         Turtle {
             position: position,
             angle: angle,
@@ -30,7 +30,7 @@ impl Turtle {
         &self.position
     }
 
-    fn turn(&mut self, angle: i32) {
+    fn turn(&mut self, angle: i16) {
         // TODO Can probably be nicer
         let mut new_angle = self.angle + angle;
 
@@ -43,19 +43,19 @@ impl Turtle {
         self.angle = new_angle;
     }
 
-    pub fn process_sequence(&mut self, sequence: String) -> Vec<Point> {
+    pub fn process_sequence(&mut self, sequence: String, angle: i16) -> Vec<Point> {
         let mut result = vec![self.position.clone()];
         for c in sequence.chars() {
             match c {
-                'F' => {
+                'F' | 'G' => {
                     self.move_forward(10);
                     result.push(self.position.clone());
                 }
                 '+' => {
-                    self.turn(-90);
+                    self.turn(-angle);
                 }
                 '-' => {
-                    self.turn(90);
+                    self.turn(angle);
                 }
                 _ => {}
             }

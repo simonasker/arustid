@@ -15,7 +15,7 @@ impl Rule {
 pub struct LSystem {
     pub axiom: String,
     pub rules: Vec<Rule>,
-    pub angle: u16,
+    pub angle: i16,
 }
 
 impl LSystem {
@@ -62,6 +62,11 @@ pub fn get_system(name: &str) -> LSystem {
             axiom: String::from("FX"),
             rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
             angle: 90,
+        },
+        "sierpinski" => LSystem {
+            axiom: String::from("F-G-G"),
+            rules: vec![Rule::new('F', "F-G+F+G-F"), Rule::new('G', "GG")],
+            angle: 120,
         },
         _ => {
             // TODO Handle this nicer
