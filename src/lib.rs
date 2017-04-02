@@ -5,13 +5,13 @@ mod geom;
 mod lsystem;
 
 use geom::Point;
-use std::env;
-use std::path::Path;
+use sdl2::gfx::primitives::DrawRenderer;
+use sdl2::image::SaveSurface;
 
 use sdl2::pixels::Color;
-use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::surface::Surface;
-use sdl2::image::SaveSurface;
+use std::env;
+use std::path::Path;
 
 pub struct Config {
     mode: String,
@@ -60,7 +60,10 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let mut prev = path_iter.next().unwrap();
 
-    let surface = Surface::new(width as u32, height as u32, sdl2::pixels::PixelFormatEnum::RGB888).unwrap();
+    let surface = Surface::new(width as u32,
+                               height as u32,
+                               sdl2::pixels::PixelFormatEnum::RGB888)
+            .unwrap();
     let mut surface_renderer = sdl2::render::Renderer::from_surface(surface).unwrap();
     surface_renderer.set_draw_color(Color::RGB(255, 255, 255));
     surface_renderer.clear();
@@ -71,7 +74,13 @@ pub fn run(config: Config) -> Result<(), &'static str> {
             None => break,
         };
 
-        surface_renderer.thick_line(prev.x as i16, prev.y as i16, current.x as i16, current.y as i16, 2, Color::RGB(0, 0, 0)).unwrap();
+        surface_renderer.thick_line(prev.x as i16,
+                                    prev.y as i16,
+                                    current.x as i16,
+                                    current.y as i16,
+                                    2,
+                                    Color::RGB(0, 0, 0))
+            .unwrap();
 
         prev = current;
     }

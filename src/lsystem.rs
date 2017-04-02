@@ -48,29 +48,37 @@ impl LSystem {
 
 pub fn get_system(name: &str) -> LSystem {
     match name {
-        "turtle" => LSystem {
-            axiom: String::from("+F"),
-            rules: vec![],
-            angle: 45,
-        },
-        "koch" => LSystem {
-            axiom: String::from("F"),
-            rules: vec![Rule::new('F', "F+F-F-F+F")],
-            angle: 90,
-        },
-        "dragon" => LSystem {
-            axiom: String::from("FX"),
-            rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
-            angle: 90,
-        },
-        "sierpinski" => LSystem {
-            axiom: String::from("F-G-G"),
-            rules: vec![Rule::new('F', "F-G+F+G-F"), Rule::new('G', "GG")],
-            angle: 120,
-        },
+        "turtle" => {
+            LSystem {
+                axiom: String::from("+F"),
+                rules: vec![],
+                angle: 45,
+            }
+        }
+        "koch" => {
+            LSystem {
+                axiom: String::from("F"),
+                rules: vec![Rule::new('F', "F+F-F-F+F")],
+                angle: 90,
+            }
+        }
+        "dragon" => {
+            LSystem {
+                axiom: String::from("FX"),
+                rules: vec![Rule::new('X', "X+YF+"), Rule::new('Y', "-FX-Y")],
+                angle: 90,
+            }
+        }
+        "sierpinski" => {
+            LSystem {
+                axiom: String::from("F-G-G"),
+                rules: vec![Rule::new('F', "F-G+F+G-F"), Rule::new('G', "GG")],
+                angle: 120,
+            }
+        }
         _ => {
             // TODO Handle this nicer
             panic!("No such system");
-        },
+        }
     }
 }
