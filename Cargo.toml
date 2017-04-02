@@ -4,4 +4,8 @@ version = "0.1.0"
 authors = ["Simon Andersson <simon.asker@posteo.net>"]
 
 [dependencies]
-image = "0.12"
+
+[dependencies.sdl2]
+version = "*"
+default-features = false
+features = ["gfx", "image"]

@@ -1,4 +1,4 @@
-extern crate image;
+extern crate sdl2;
 
 mod turtle;
 mod geom;
@@ -6,8 +6,12 @@ mod lsystem;
 
 use geom::Point;
 use std::env;
-use std::fs::File;
 use std::path::Path;
+
+use sdl2::pixels::Color;
+use sdl2::gfx::primitives::DrawRenderer;
+use sdl2::surface::Surface;
+use sdl2::image::SaveSurface;
 
 pub struct Config {
     mode: String,
@@ -56,8 +60,10 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let mut prev = path_iter.next().unwrap();
 
-    let base_pixel = image::Rgb([255, 255, 255]);
-    let mut imgbuf = image::ImageBuffer::from_pixel(width as u32, height as u32, base_pixel);
+    let surface = Surface::new(width as u32, height as u32, sdl2::pixels::PixelFormatEnum::RGB888).unwrap();
+    let mut surface_renderer = sdl2::render::Renderer::from_surface(surface).unwrap();
+    surface_renderer.set_draw_color(Color::RGB(255, 255, 255));
+    surface_renderer.clear();
 
     loop {
         let current = match path_iter.next() {
@@ -65,19 +71,13 @@ pub fn run(config: Config) -> Result<(), &'static str> {
             None => break,
         };
 
-        for Point { x, y } in geom::calculate_line(&prev, &current) {
-            // TODO Maybe the delta should be added here instead
-            // let x = (x + dx) as u32;
-            // let y = (y + dy) as u32;
-            imgbuf.put_pixel(x as u32, y as u32, image::Rgb([0, 0, 0]));
-        }
+        surface_renderer.thick_line(prev.x as i16, prev.y as i16, current.x as i16, current.y as i16, 2, Color::RGB(0, 0, 0)).unwrap();
 
         prev = current;
     }
 
-    let ref mut fout = File::create(&Path::new(&config.output_filename)).unwrap();
-
-    let _ = image::ImageRgb8(imgbuf).save(fout, image::PNG);
+    let surface = surface_renderer.into_surface().unwrap();
+    surface.save(Path::new(&config.output_filename)).unwrap();
 
     Ok(())
 }
