@@ -19,6 +19,14 @@ impl Config {
     pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
         args.next();
 
+        let mode = args.next().unwrap_or(String::from(""));
+        match mode.as_ref() {
+            "turtle" => { println!("Turtle graphics") },
+            "koch" => { println!("Koch curve") },
+            "dragon" => { println!("Dragon curve") },
+            _ => {},
+        }
+
         Ok(Config {
                iterations: 10,
                output_filename: String::from("output.png"),
