@@ -74,11 +74,10 @@ pub fn run(config: Config) -> Result<(), &'static str> {
             None => break,
         };
 
-        surface_renderer.thick_line(prev.x as i16,
+        surface_renderer.aa_line(prev.x as i16,
                                     prev.y as i16,
                                     current.x as i16,
                                     current.y as i16,
-                                    2,
                                     Color::RGB(0, 0, 0))
             .unwrap();
 

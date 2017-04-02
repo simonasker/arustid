@@ -2,11 +2,11 @@ use geom::Point;
 
 pub struct Turtle {
     position: Point,
-    angle: i16,
+    angle: i32,
 }
 
 impl Turtle {
-    pub fn new(position: Point, angle: i16) -> Turtle {
+    pub fn new(position: Point, angle: i32) -> Turtle {
         Turtle {
             position: position,
             angle: angle,
@@ -14,25 +14,14 @@ impl Turtle {
     }
 
     fn move_forward(&mut self, steps: i32) -> &Point {
-        let new_position = match self.angle {
-            0 => Point::new(self.position.x + steps, self.position.y),
-            90 => Point::new(self.position.x, self.position.y + steps),
-            180 => Point::new(self.position.x - steps, self.position.y),
-            270 => Point::new(self.position.x, self.position.y - steps),
-            _ => {
-                let new_x = self.position.x as f32 +
-                            steps as f32 * (self.angle as f32).to_radians().cos();
-                let new_y = self.position.y as f32 +
-                            steps as f32 * (self.angle as f32).to_radians().sin();
-                Point::new(new_x as i32, new_y as i32)
-            }
-        };
-
-        self.position = new_position;
+        // TODO Should this really be negative
+        let new_x = self.position.x as f32 - steps as f32 * (self.angle as f32).to_radians().cos();
+        let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
+        self.position = Point::new(new_x.round() as i32, new_y.round() as i32);
         &self.position
     }
 
-    fn turn(&mut self, angle: i16) {
+    fn turn(&mut self, angle: i32) {
         // TODO Can probably be nicer
         let mut new_angle = self.angle + angle;
 
@@ -45,11 +34,11 @@ impl Turtle {
         self.angle = new_angle;
     }
 
-    pub fn process_sequence(&mut self, sequence: String, angle: i16) -> Vec<Point> {
+    pub fn process_sequence(&mut self, sequence: String, angle: i32) -> Vec<Point> {
         let mut result = vec![self.position.clone()];
         for c in sequence.chars() {
             match c {
-                'F' | 'G' => {
+                'F' | 'G' | 'A' | 'B' => {
                     self.move_forward(10);
                     result.push(self.position.clone());
                 }

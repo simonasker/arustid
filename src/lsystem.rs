@@ -15,7 +15,7 @@ impl Rule {
 pub struct LSystem {
     pub axiom: String,
     pub rules: Vec<Rule>,
-    pub angle: i16,
+    pub angle: i32,
 }
 
 impl LSystem {
@@ -50,9 +50,9 @@ pub fn get_system(name: &str) -> LSystem {
     match name {
         "turtle" => {
             LSystem {
-                axiom: String::from("+F"),
+                axiom: String::from("F"),
                 rules: vec![],
-                angle: 45,
+                angle: 90,
             }
         }
         "koch" => {
@@ -74,6 +74,13 @@ pub fn get_system(name: &str) -> LSystem {
                 axiom: String::from("F-G-G"),
                 rules: vec![Rule::new('F', "F-G+F+G-F"), Rule::new('G', "GG")],
                 angle: 120,
+            }
+        }
+        "arrowhead" => {
+            LSystem {
+                axiom: String::from("A"),
+                rules: vec![Rule::new('A', "+B-A-B+"), Rule::new('B', "-A+B+A-")],
+                angle: 60,
             }
         }
         _ => {
