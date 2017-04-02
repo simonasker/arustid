@@ -48,6 +48,11 @@ impl LSystem {
 
 pub fn get_system(name: &str) -> LSystem {
     match name {
+        "turtle" => LSystem {
+            axiom: String::from("+F"),
+            rules: vec![],
+            angle: 45,
+        },
         "koch" => LSystem {
             axiom: String::from("F"),
             rules: vec![Rule::new('F', "F+F-F-F+F")],

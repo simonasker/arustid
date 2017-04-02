@@ -19,12 +19,12 @@ impl Turtle {
             90 => Point::new(self.position.x, self.position.y + steps),
             180 => Point::new(self.position.x - steps, self.position.y),
             270 => Point::new(self.position.x, self.position.y - steps),
-            _ => panic!("Invalid angle: {}", self.angle),
+            _ => {
+                let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
+                let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
+                Point::new(new_x as i32, new_y as i32)
+            }
         };
-
-        // TODO Calculate diagonal lines with this
-        // let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
-        // let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
 
         self.position = new_position;
         &self.position
