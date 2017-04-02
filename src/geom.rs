@@ -16,13 +16,11 @@ impl Point {
 pub fn calculate_line(p1: &Point, p2: &Point) -> Vec<Point> {
     let mut line = Vec::new();
     if p1.x == p2.x {
-        // TODO Try adding +1 to end of interval
-        for y in cmp::min(p1.y, p2.y)..cmp::max(p1.y, p2.y) {
+        for y in cmp::min(p1.y, p2.y)..cmp::max(p1.y, p2.y) + 1 {
             line.push(Point::new(p1.x, y));
         }
     } else if p1.y == p2.y {
-        // TODO Try adding +1 to end of interval
-        for x in cmp::min(p1.x, p2.x)..cmp::max(p1.x, p2.x) {
+        for x in cmp::min(p1.x, p2.x)..cmp::max(p1.x, p2.x) + 1 {
             line.push(Point::new(x, p1.y));
         }
     } else {
