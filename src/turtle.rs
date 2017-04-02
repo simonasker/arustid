@@ -14,18 +14,33 @@ impl Turtle {
     }
 
     fn move_forward(&mut self, steps: i32) -> &Point {
-        let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
-        let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
-        self.position = Point::new(new_x as i32, new_y as i32);
+        let new_position = match self.angle {
+            0 => Point::new(self.position.x + steps, self.position.y),
+            90 => Point::new(self.position.x, self.position.y + steps),
+            180 => Point::new(self.position.x - steps, self.position.y),
+            270 => Point::new(self.position.x, self.position.y - steps),
+            _ => panic!("Invalid angle: {}", self.angle),
+        };
+
+        // TODO Calculate diagonal lines with this
+        // let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
+        // let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
+
+        self.position = new_position;
         &self.position
     }
 
-    fn turn_left(&mut self, angle: i32) {
-        self.angle = (self.angle - angle) % 360;
-    }
+    fn turn(&mut self, angle: i32) {
+        // TODO Can probably be nicer
+        let mut new_angle = self.angle + angle;
 
-    fn turn_right(&mut self, angle: i32) {
-        self.angle = (self.angle + angle) % 360;
+        if new_angle >= 360 {
+            new_angle = new_angle - 360;
+        } else if new_angle < 0 {
+            new_angle = 360 + new_angle
+        }
+
+        self.angle = new_angle;
     }
 
     pub fn process_sequence(&mut self, sequence: String) -> Vec<Point> {
@@ -37,10 +52,10 @@ impl Turtle {
                     result.push(self.position.clone());
                 }
                 '+' => {
-                    self.turn_left(90);
+                    self.turn(-90);
                 }
                 '-' => {
-                    self.turn_right(90);
+                    self.turn(90);
                 }
                 _ => {}
             }

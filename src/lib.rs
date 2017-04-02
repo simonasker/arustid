@@ -20,7 +20,7 @@ impl Config {
         args.next();
 
         Ok(Config {
-               iterations: 9,
+               iterations: 10,
                output_filename: String::from("output.png"),
            })
     }
@@ -45,7 +45,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let sequence = _dragon.generate(config.iterations);
 
-    let mut turtle = turtle::Turtle::new(Point::new(500, 250), 0);
+    let mut turtle = turtle::Turtle::new(Point::new(0, 0), 0);
     let mut path = turtle.process_sequence(sequence);
 
     let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);
@@ -74,6 +74,9 @@ pub fn run(config: Config) -> Result<(), &'static str> {
         };
 
         for Point { x, y } in geom::calculate_line(&prev, &current) {
+            // TODO Maybe the delta should be added here instead
+            // let x = (x + dx) as u32;
+            // let y = (y + dy) as u32;
             imgbuf.put_pixel(x as u32, y as u32, image::Rgb([0, 0, 0]));
         }
 
