@@ -18,11 +18,14 @@ impl Turtle {
         }
     }
 
-    fn move_forward(&mut self, steps: i32) -> &Point {
+    fn move_forward(&mut self, steps: i32, renderer: &mut Renderer) {
         let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
         let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
-        self.position = Point::new(new_x.round() as i32, new_y.round() as i32);
-        &self.position
+        let new_x = new_x.round() as i32;
+        let new_y = new_y.round() as i32;
+        // TODO Handle this result better
+        renderer.aa_line(self.position.x as i16, self.position.y as i16, new_x as i16, new_y as i16, Color::RGB(0, 0, 0)).unwrap();
+        self.position = Point::new(new_x, new_y);
     }
 
     fn turn(&mut self, angle: i32) {
@@ -39,17 +42,10 @@ impl Turtle {
     }
 
     pub fn process_sequence(&mut self, sequence: String, angle: i32, renderer: &mut Renderer) {
-        let mut prev = self.position;
         for c in sequence.chars() {
-            println!("{:?}", self.position);
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
-                    self.move_forward(16);
-                    // result.push(self.position.clone());
-                    renderer.aa_line(prev.x as i16, prev.y as i16,
-                                    self.position.x as i16,
-                                    self.position.y as i16,
-                                    Color::RGB(0, 0, 0)).unwrap();
+                    self.move_forward(16, renderer);
                 }
                 '+' => {
                     self.turn(-angle);
@@ -59,7 +55,6 @@ impl Turtle {
                 }
                 '[' => {
                     self.stack.push((self.position.clone(), self.angle.clone()));
-                    // result.push(self.position.clone());
                     self.turn(-angle);
                 }
                 ']' => {
@@ -67,12 +62,10 @@ impl Turtle {
                     let (old_position, old_angle) = self.stack.pop().unwrap();
                     self.position = old_position;
                     self.angle = old_angle;
-                    // result.push(self.position.clone());
                     self.turn(angle);
                 }
                 _ => {}
             }
-            prev = self.position;
         }
     }
 }

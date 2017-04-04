@@ -40,24 +40,6 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let sequence = system.generate(config.iterations);
 
-    // let mut path = turtle.process_sequence(sequence, system.angle);
-
-    // let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);
-
-    // let margin = 20;
-
-    // let dx = -min_x + margin;
-    // let dy = -min_y + margin;
-
-    // let width = max_x - min_x + 2 * margin;
-    // let height = max_y - min_y + 2 * margin;
-
-    // geom::translate(&mut path, dx, dy);
-
-    // let mut path_iter = path.iter();
-
-    // let mut prev = path_iter.next().unwrap();
-
     let width = 1000;
     let height = 1000;
     let surface = Surface::new(width as u32,
@@ -70,23 +52,6 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let mut turtle = turtle::Turtle::new(Point::new(500, 500), 270);
     turtle.process_sequence(sequence, system.angle, &mut surface_renderer);
-
-
-    // loop {
-    //     let current = match path_iter.next() {
-    //         Some(p) => p,
-    //         None => break,
-    //     };
-
-    //     surface_renderer.aa_line(prev.x as i16,
-    //                              prev.y as i16,
-    //                              current.x as i16,
-    //                              current.y as i16,
-    //                              Color::RGB(0, 0, 0))
-    //         .unwrap();
-
-    //     prev = current;
-    // }
 
     let surface = surface_renderer.into_surface().unwrap();
     surface.save(Path::new(&config.output_filename)).unwrap();
