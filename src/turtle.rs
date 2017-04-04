@@ -1,4 +1,7 @@
 use sdl2::rect::Point;
+use sdl2::render::Renderer;
+use sdl2::gfx::primitives::DrawRenderer;
+use sdl2::pixels::Color;
 
 pub struct Turtle {
     position: Point,
@@ -35,13 +38,18 @@ impl Turtle {
         self.angle = new_angle;
     }
 
-    pub fn process_sequence(&mut self, sequence: String, angle: i32) -> Vec<Point> {
-        let mut result = vec![self.position.clone()];
+    pub fn process_sequence(&mut self, sequence: String, angle: i32, renderer: &mut Renderer) {
+        let mut prev = self.position;
         for c in sequence.chars() {
+            println!("{:?}", self.position);
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
                     self.move_forward(16);
-                    result.push(self.position.clone());
+                    // result.push(self.position.clone());
+                    renderer.aa_line(prev.x as i16, prev.y as i16,
+                                    self.position.x as i16,
+                                    self.position.y as i16,
+                                    Color::RGB(0, 0, 0)).unwrap();
                 }
                 '+' => {
                     self.turn(-angle);
@@ -51,7 +59,7 @@ impl Turtle {
                 }
                 '[' => {
                     self.stack.push((self.position.clone(), self.angle.clone()));
-                    result.push(self.position.clone());
+                    // result.push(self.position.clone());
                     self.turn(-angle);
                 }
                 ']' => {
@@ -59,12 +67,12 @@ impl Turtle {
                     let (old_position, old_angle) = self.stack.pop().unwrap();
                     self.position = old_position;
                     self.angle = old_angle;
-                    result.push(self.position.clone());
+                    // result.push(self.position.clone());
                     self.turn(angle);
                 }
                 _ => {}
             }
+            prev = self.position;
         }
-        result
     }
 }

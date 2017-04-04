@@ -2,6 +2,7 @@ use std::cmp;
 
 use sdl2::rect::Point;
 
+#[allow(unused)]
 pub fn find_limits(path: &Vec<Point>) -> (i32, i32, i32, i32) {
     let mut min_x = i32::max_value();
     let mut max_x = i32::min_value();
@@ -18,6 +19,7 @@ pub fn find_limits(path: &Vec<Point>) -> (i32, i32, i32, i32) {
     (min_x, max_x, min_y, max_y)
 }
 
+#[allow(unused)]
 pub fn translate(path: &mut Vec<Point>, dx: i32, dy: i32) {
     for ref mut point in path {
         point.x += dx;
