@@ -50,7 +50,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     surface_renderer.set_draw_color(Color::RGB(255, 255, 255));
     surface_renderer.clear();
 
-    let mut turtle = turtle::Turtle::new(Point::new(500, 500), 270);
+    let mut turtle = turtle::Turtle::new(Point::new(500, 1000), 270);
     turtle.process_sequence(sequence, system.angle, &mut surface_renderer);
 
     let surface = surface_renderer.into_surface().unwrap();

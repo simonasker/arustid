@@ -45,7 +45,7 @@ impl Turtle {
         for c in sequence.chars() {
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
-                    self.move_forward(16, renderer);
+                    self.move_forward(4, renderer);
                 }
                 '+' => {
                     self.turn(-angle);
@@ -63,6 +63,15 @@ impl Turtle {
                     self.position = old_position;
                     self.angle = old_angle;
                     self.turn(angle);
+                }
+                '(' => {
+                    self.stack.push((self.position.clone(), self.angle.clone()));
+                }
+                ')' => {
+                    // TODO Dangerous unwrap
+                    let (old_position, old_angle) = self.stack.pop().unwrap();
+                    self.position = old_position;
+                    self.angle = old_angle;
                 }
                 _ => {}
             }
