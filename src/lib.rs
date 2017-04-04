@@ -75,10 +75,10 @@ pub fn run(config: Config) -> Result<(), &'static str> {
         };
 
         surface_renderer.aa_line(prev.x as i16,
-                                    prev.y as i16,
-                                    current.x as i16,
-                                    current.y as i16,
-                                    Color::RGB(0, 0, 0))
+                                 prev.y as i16,
+                                 current.x as i16,
+                                 current.y as i16,
+                                 Color::RGB(0, 0, 0))
             .unwrap();
 
         prev = current;
