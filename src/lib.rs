@@ -41,7 +41,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 
     let sequence = system.generate(config.iterations);
 
-    let mut turtle = turtle::Turtle::new(Point::new(0, 0), 0);
+    let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270);
     let mut path = turtle.process_sequence(sequence, system.angle);
 
     let (min_x, max_x, min_y, max_y) = geom::find_limits(&path);

@@ -52,7 +52,7 @@ pub fn get_system(name: &str) -> LSystem {
             LSystem {
                 axiom: String::from("F"),
                 rules: vec![],
-                angle: 90,
+                angle: 45,
             }
         }
         "koch" => {
@@ -80,6 +80,13 @@ pub fn get_system(name: &str) -> LSystem {
             LSystem {
                 axiom: String::from("A"),
                 rules: vec![Rule::new('A', "+B-A-B+"), Rule::new('B', "-A+B+A-")],
+                angle: 60,
+            }
+        }
+        "pythagora" => {
+            LSystem {
+                axiom: String::from("0"),
+                rules: vec![Rule::new('1', "11"), Rule::new('0', "1[0]0")],
                 angle: 60,
             }
         }

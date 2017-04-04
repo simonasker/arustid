@@ -3,6 +3,7 @@ use geom::Point;
 pub struct Turtle {
     position: Point,
     angle: i32,
+    stack: Vec<(Point, i32)>,
 }
 
 impl Turtle {
@@ -10,12 +11,12 @@ impl Turtle {
         Turtle {
             position: position,
             angle: angle,
+            stack: Vec::new(),
         }
     }
 
     fn move_forward(&mut self, steps: i32) -> &Point {
-        // TODO Should this really be negative
-        let new_x = self.position.x as f32 - steps as f32 * (self.angle as f32).to_radians().cos();
+        let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
         let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
         self.position = Point::new(new_x.round() as i32, new_y.round() as i32);
         &self.position
@@ -38,14 +39,27 @@ impl Turtle {
         let mut result = vec![self.position.clone()];
         for c in sequence.chars() {
             match c {
-                'F' | 'G' | 'A' | 'B' => {
-                    self.move_forward(10);
+                'F' | 'G' | 'A' | 'B' | '1' | '0' => {
+                    self.move_forward(16);
                     result.push(self.position.clone());
                 }
                 '+' => {
                     self.turn(-angle);
                 }
                 '-' => {
+                    self.turn(angle);
+                }
+                '[' => {
+                    self.stack.push((self.position.clone(), self.angle.clone()));
+                    result.push(self.position.clone());
+                    self.turn(-angle);
+                }
+                ']' => {
+                    // TODO Dangerous unwrap
+                    let (old_position, old_angle) = self.stack.pop().unwrap();
+                    self.position = old_position;
+                    self.angle = old_angle;
+                    result.push(self.position.clone());
                     self.turn(angle);
                 }
                 _ => {}
