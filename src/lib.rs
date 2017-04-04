@@ -4,7 +4,7 @@ mod turtle;
 mod geom;
 mod lsystem;
 
-use geom::Point;
+use sdl2::rect::Point;
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::image::SaveSurface;
 

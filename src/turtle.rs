@@ -1,4 +1,4 @@
-use geom::Point;
+use sdl2::rect::Point;
 
 pub struct Turtle {
     position: Point,
