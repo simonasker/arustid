@@ -1,6 +1,7 @@
-use std::cmp;
+
 
 use sdl2::rect::Point;
+use std::cmp;
 
 #[allow(unused)]
 pub fn find_limits(path: &Vec<Point>) -> (i32, i32, i32, i32) {

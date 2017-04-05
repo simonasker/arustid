@@ -1,7 +1,8 @@
-use sdl2::rect::Point;
-use sdl2::render::Renderer;
+
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
+use sdl2::rect::Point;
+use sdl2::render::Renderer;
 
 pub struct Turtle<'a> {
     renderer: &'a Renderer<'a>,
@@ -26,7 +27,13 @@ impl<'a> Turtle<'a> {
         let new_x = new_x.round() as i32;
         let new_y = new_y.round() as i32;
         // TODO Handle this result better
-        self.renderer.aa_line(self.position.x as i16, self.position.y as i16, new_x as i16, new_y as i16, Color::RGB(0, 0, 0)).unwrap();
+        self.renderer
+            .aa_line(self.position.x as i16,
+                     self.position.y as i16,
+                     new_x as i16,
+                     new_y as i16,
+                     Color::RGB(0, 0, 0))
+            .unwrap();
         self.position = Point::new(new_x, new_y);
     }
 

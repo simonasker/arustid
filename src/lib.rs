@@ -4,10 +4,12 @@ mod turtle;
 mod geom;
 mod lsystem;
 
-use sdl2::rect::Point;
+use sdl2::event::Event;
 use sdl2::image::SaveSurface;
+use sdl2::keyboard::Keycode;
 
 use sdl2::pixels::Color;
+use sdl2::rect::Point;
 use sdl2::surface::Surface;
 use std::env;
 use std::path::Path;
@@ -36,8 +38,48 @@ impl Config {
 }
 
 pub fn run(config: Config) -> Result<(), &'static str> {
-    let system = lsystem::get_system(&config.mode);
+    draw_to_window(config)
+}
 
+pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
+    let system = lsystem::get_system(&config.mode);
+    let sequence = system.generate(config.iterations);
+
+    let sdl_context = sdl2::init().unwrap();
+    let video_subsystem = sdl_context.video().unwrap();
+    let window = video_subsystem.window("Arustid", 800, 600)
+        .position_centered()
+        .opengl()
+        .build()
+        .unwrap();
+    let mut renderer = window.renderer().build().unwrap();
+
+    renderer.set_draw_color(Color::RGB(255, 255, 255));
+    renderer.clear();
+
+    {
+        let mut turtle = turtle::Turtle::new(&mut renderer, Point::new(400, 300), 270);
+        turtle.process_sequence(sequence, system.angle);
+    }
+
+    renderer.present();
+    let mut event_pump = sdl_context.event_pump().unwrap();
+
+    'running: loop {
+        for event in event_pump.poll_iter() {
+            match event {
+                Event::Quit { .. } |
+                Event::KeyDown { keycode: Some(Keycode::Escape), .. } => break 'running,
+                _ => {}
+            }
+        }
+    }
+
+    Ok(())
+}
+
+pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
+    let system = lsystem::get_system(&config.mode);
     let sequence = system.generate(config.iterations);
 
     let width = 1000;
