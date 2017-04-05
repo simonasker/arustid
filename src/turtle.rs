@@ -9,6 +9,7 @@ pub struct Turtle<'a> {
     position: Point,
     angle: i32,
     stack: Vec<(Point, i32)>,
+    path: Vec<Point>,
 }
 
 impl<'a> Turtle<'a> {
@@ -18,7 +19,12 @@ impl<'a> Turtle<'a> {
             position: position,
             angle: angle,
             stack: Vec::new(),
+            path: vec![position],
         }
+    }
+
+    pub fn get_path(&self) -> &Vec<Point> {
+        &self.path
     }
 
     fn move_forward(&mut self, steps: i32) {
@@ -35,6 +41,7 @@ impl<'a> Turtle<'a> {
                      Color::RGB(0, 0, 0))
             .unwrap();
         self.position = Point::new(new_x, new_y);
+        self.path.push(self.position);
     }
 
     fn turn(&mut self, angle: i32) {
@@ -50,7 +57,7 @@ impl<'a> Turtle<'a> {
         self.angle = new_angle;
     }
 
-    pub fn process_sequence(&mut self, sequence: String, angle: i32) {
+    pub fn process_sequence(&mut self, sequence: &str, angle: i32) {
         for c in sequence.chars() {
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {

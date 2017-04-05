@@ -56,10 +56,36 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
 
     renderer.set_draw_color(Color::RGB(255, 255, 255));
     renderer.clear();
+    let (min_x, max_x, min_y, max_y);
 
     {
-        let mut turtle = turtle::Turtle::new(&mut renderer, Point::new(400, 300), 270);
-        turtle.process_sequence(sequence, system.angle);
+        let mut turtle = turtle::Turtle::new(&mut renderer, Point::new(0, 0), 270);
+        turtle.process_sequence(&sequence, system.angle);
+        let limits = geom::find_limits(turtle.get_path());
+        min_x = limits.0;
+        max_x = limits.1;
+        min_y = limits.2;
+        max_y = limits.3;
+    }
+
+    let margin = 20;
+    let width = max_x - min_x + 2 * margin;
+    let height = max_y - min_y + 2 * margin;
+    let start_x = 0 - min_x + margin;
+    let start_y = 0 - min_y + margin;
+
+    let window = video_subsystem.window("Arustid", width as u32, height as u32)
+        .position_centered()
+        .opengl()
+        .build()
+        .unwrap();
+
+    let mut renderer = window.renderer().build().unwrap();
+    renderer.set_draw_color(Color::RGB(255, 255, 255));
+    renderer.clear();
+    {
+        let mut turtle = turtle::Turtle::new(&mut renderer, Point::new(start_x, start_y), 270);
+        turtle.process_sequence(&sequence, system.angle);
     }
 
     renderer.present();
@@ -94,7 +120,7 @@ pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
 
     {
         let mut turtle = turtle::Turtle::new(&mut surface_renderer, Point::new(500, 1000), 270);
-        turtle.process_sequence(sequence, system.angle);
+        turtle.process_sequence(&sequence, system.angle);
     }
 
     let surface = surface_renderer.into_surface().unwrap();
