@@ -67,7 +67,7 @@ impl<'a> Turtle<'a> {
         for c in sequence.chars() {
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
-                    self.move_forward(4);
+                    self.move_forward(10);
                 }
                 '+' => {
                     self.turn(-angle);
