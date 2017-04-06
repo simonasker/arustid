@@ -27,3 +27,11 @@ pub fn translate(path: &mut Vec<Point>, dx: i32, dy: i32) {
         point.y += dy;
     }
 }
+
+pub fn get_endpoint(p: Point, angle: i32, distance: i32) -> Point {
+    let new_x = p.x as f32 + distance as f32 * (angle as f32).to_radians().cos();
+    let new_y = p.y as f32 + distance as f32 * (angle as f32).to_radians().sin();
+    let new_x = new_x.round() as i32;
+    let new_y = new_y.round() as i32;
+    Point::new(new_x, new_y)
+}

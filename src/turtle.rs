@@ -4,6 +4,8 @@ use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::render::Renderer;
 
+use geom;
+
 pub struct Turtle<'a> {
     renderer: Option<&'a Renderer<'a>>,
     position: Point,
@@ -32,21 +34,18 @@ impl<'a> Turtle<'a> {
     }
 
     fn move_forward(&mut self, steps: i32) {
-        let new_x = self.position.x as f32 + steps as f32 * (self.angle as f32).to_radians().cos();
-        let new_y = self.position.y as f32 + steps as f32 * (self.angle as f32).to_radians().sin();
-        let new_x = new_x.round() as i32;
-        let new_y = new_y.round() as i32;
+        let endpoint = geom::get_endpoint(self.position, self.angle, steps);
         // TODO Handle this result better
         if let Some(renderer) = self.renderer {
             renderer
                 .aa_line(self.position.x as i16,
                         self.position.y as i16,
-                        new_x as i16,
-                        new_y as i16,
+                        endpoint.x as i16,
+                        endpoint.y as i16,
                         Color::RGB(0, 0, 0))
                 .unwrap();
         }
-        self.position = Point::new(new_x, new_y);
+        self.position = endpoint;
         self.path.push(self.position);
     }
 
