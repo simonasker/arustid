@@ -83,6 +83,13 @@ pub fn get_system(name: &str) -> LSystem {
                 angle: 60,
             }
         }
+        "gosper" => {
+            LSystem {
+                axiom: String::from("A"),
+                rules: vec![Rule::new('A', "A-B--B+A++AA+B-"), Rule::new('B', "+A-BB--B-A++A+B")],
+                angle: 60,
+            }
+        }
         "pythagora" => {
             LSystem {
                 axiom: String::from("0"),
