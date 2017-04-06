@@ -5,7 +5,7 @@ use sdl2::rect::Point;
 use sdl2::render::Renderer;
 
 pub struct Turtle<'a> {
-    renderer: &'a Renderer<'a>,
+    renderer: Option<&'a Renderer<'a>>,
     position: Point,
     angle: i32,
     stack: Vec<(Point, i32)>,
@@ -13,14 +13,18 @@ pub struct Turtle<'a> {
 }
 
 impl<'a> Turtle<'a> {
-    pub fn new(renderer: &'a Renderer, position: Point, angle: i32) -> Turtle<'a> {
+    pub fn new(position: Point, angle: i32) -> Turtle<'a> {
         Turtle {
-            renderer: renderer,
+            renderer: None,
             position: position,
             angle: angle,
             stack: Vec::new(),
             path: vec![position],
         }
+    }
+
+    pub fn set_renderer(&mut self, renderer: &'a mut Renderer) {
+        self.renderer = Some(renderer);
     }
 
     pub fn get_path(&self) -> &Vec<Point> {
@@ -33,13 +37,15 @@ impl<'a> Turtle<'a> {
         let new_x = new_x.round() as i32;
         let new_y = new_y.round() as i32;
         // TODO Handle this result better
-        self.renderer
-            .aa_line(self.position.x as i16,
-                     self.position.y as i16,
-                     new_x as i16,
-                     new_y as i16,
-                     Color::RGB(0, 0, 0))
-            .unwrap();
+        if let Some(renderer) = self.renderer {
+            renderer
+                .aa_line(self.position.x as i16,
+                        self.position.y as i16,
+                        new_x as i16,
+                        new_y as i16,
+                        Color::RGB(0, 0, 0))
+                .unwrap();
+        }
         self.position = Point::new(new_x, new_y);
         self.path.push(self.position);
     }

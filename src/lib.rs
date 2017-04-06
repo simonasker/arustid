@@ -45,21 +45,10 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     let system = lsystem::get_system(&config.mode);
     let sequence = system.generate(config.iterations);
 
-    let sdl_context = sdl2::init().unwrap();
-    let video_subsystem = sdl_context.video().unwrap();
-    let window = video_subsystem.window("Arustid", 800, 600)
-        .position_centered()
-        .opengl()
-        .build()
-        .unwrap();
-    let mut renderer = window.renderer().build().unwrap();
-
-    renderer.set_draw_color(Color::RGB(255, 255, 255));
-    renderer.clear();
     let (min_x, max_x, min_y, max_y);
 
     {
-        let mut turtle = turtle::Turtle::new(&mut renderer, Point::new(0, 0), 270);
+        let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270);
         turtle.process_sequence(&sequence, system.angle);
         let limits = geom::find_limits(turtle.get_path());
         min_x = limits.0;
@@ -73,18 +62,20 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     let height = max_y - min_y + 2 * margin;
     let start_x = 0 - min_x + margin;
     let start_y = 0 - min_y + margin;
-
+    let sdl_context = sdl2::init().unwrap();
+    let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem.window("Arustid", width as u32, height as u32)
         .position_centered()
         .opengl()
         .build()
         .unwrap();
-
     let mut renderer = window.renderer().build().unwrap();
     renderer.set_draw_color(Color::RGB(255, 255, 255));
     renderer.clear();
+
     {
-        let mut turtle = turtle::Turtle::new(&mut renderer, Point::new(start_x, start_y), 270);
+        let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270);
+        turtle.set_renderer(&mut renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
 
@@ -119,7 +110,8 @@ pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
     surface_renderer.clear();
 
     {
-        let mut turtle = turtle::Turtle::new(&mut surface_renderer, Point::new(500, 1000), 270);
+        let mut turtle = turtle::Turtle::new(Point::new(500, 1000), 270);
+        turtle.set_renderer(&mut surface_renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
 
