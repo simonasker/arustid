@@ -36,9 +36,9 @@ pub fn get_endpoint(p: Point, angle: i32, distance: i32) -> Point {
     Point::new(new_x, new_y)
 }
 
-pub fn get_rectangle(p1: Point, angle: i32, distance: i32) -> (Point, Point, Point, Point) {
-    let a = get_endpoint(p1, angle + 90, 10);
-    let b = get_endpoint(p1, angle - 90, 10);
+pub fn get_rectangle(p1: Point, angle: i32, distance: i32, width: i32) -> (Point, Point, Point, Point) {
+    let a = get_endpoint(p1, angle + 90, width / 2);
+    let b = get_endpoint(p1, angle - 90, width / 2);
 
     let dx_a = p1.x - a.x;
     let dy_a = p1.y - a.y;
