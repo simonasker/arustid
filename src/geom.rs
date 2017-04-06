@@ -35,3 +35,20 @@ pub fn get_endpoint(p: Point, angle: i32, distance: i32) -> Point {
     let new_y = new_y.round() as i32;
     Point::new(new_x, new_y)
 }
+
+pub fn get_rectangle(p1: Point, angle: i32, distance: i32) -> (Point, Point, Point, Point) {
+    let a = get_endpoint(p1, angle + 90, 10);
+    let b = get_endpoint(p1, angle - 90, 10);
+
+    let dx_a = p1.x - a.x;
+    let dy_a = p1.y - a.y;
+    let dx_b = p1.x - b.x;
+    let dy_b = p1.y - b.y;
+
+    let p2 = get_endpoint(p1, angle, distance);
+
+    let c = Point::new(p2.x + dx_a, p2.y + dy_a);
+    let d = Point::new(p2.x + dx_b, p2.y + dy_b);
+
+    (a, b, c, d)
+}

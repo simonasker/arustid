@@ -113,7 +113,7 @@ pub fn get_system(name: &str) -> LSystem {
         }
         "custom" => {
             LSystem {
-                axiom: String::from("X"),
+                axiom: String::from("+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F"),
                 rules: vec![Rule::new('X', "F(+X)F(-X)+X"), Rule::new('F', "FF")],
                 angle: 20,
             }

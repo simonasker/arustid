@@ -47,10 +47,22 @@ impl<'a> Turtle<'a> {
         }
     }
 
+    fn draw_rectangle(&mut self, a: Point, b: Point, c: Point, d: Point) {
+        if let Some(renderer) = self.renderer {
+            renderer
+                .aa_polygon(&[a.x as i16, b.x as i16, c.x as i16, d.x as i16],
+                            &[a.y as i16, b.y as i16, c.y as i16, d.y as i16],
+                            Color::RGB(0, 0, 0))
+                .unwrap();
+        }
+    }
+
     fn move_forward(&mut self, steps: i32) {
         let p1 = self.position;
         let p2 = geom::get_endpoint(p1, self.angle, steps);
+        let (a, b, c, d) = geom::get_rectangle(p1, self.angle, steps);
         self.draw_line(p1, p2);
+        self.draw_rectangle(a, b, c ,d);
         self.position = p2;
         self.path.push(self.position);
     }
@@ -72,7 +84,7 @@ impl<'a> Turtle<'a> {
         for c in sequence.chars() {
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
-                    self.move_forward(10);
+                    self.move_forward(100);
                 }
                 '+' => {
                     self.turn(-angle);
