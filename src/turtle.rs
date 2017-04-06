@@ -14,6 +14,7 @@ pub struct Turtle<'a> {
     path: Vec<Point>,
 }
 
+
 impl<'a> Turtle<'a> {
     pub fn new(position: Point, angle: i32) -> Turtle<'a> {
         Turtle {
@@ -33,19 +34,24 @@ impl<'a> Turtle<'a> {
         &self.path
     }
 
-    fn move_forward(&mut self, steps: i32) {
-        let endpoint = geom::get_endpoint(self.position, self.angle, steps);
+    fn draw_line(&mut self, p1: Point, p2: Point) {
         // TODO Handle this result better
         if let Some(renderer) = self.renderer {
             renderer
-                .aa_line(self.position.x as i16,
-                        self.position.y as i16,
-                        endpoint.x as i16,
-                        endpoint.y as i16,
-                        Color::RGB(0, 0, 0))
+                .aa_line(p1.x as i16,
+                         p1.y as i16,
+                         p2.x as i16,
+                         p2.y as i16,
+                         Color::RGB(0, 0, 0))
                 .unwrap();
         }
-        self.position = endpoint;
+    }
+
+    fn move_forward(&mut self, steps: i32) {
+        let p1 = self.position;
+        let p2 = geom::get_endpoint(p1, self.angle, steps);
+        self.draw_line(p1, p2);
+        self.position = p2;
         self.path.push(self.position);
     }
 
