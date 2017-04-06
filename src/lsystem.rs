@@ -104,6 +104,13 @@ pub fn get_system(name: &str) -> LSystem {
                 angle: 25,
             }
         }
+        "plant2" => {
+            LSystem {
+                axiom: String::from("X"),
+                rules: vec![Rule::new('X', "F(+X)(-X)FX"), Rule::new('F', "FF")],
+                angle: 25,
+            }
+        }
         _ => {
             // TODO Handle this nicer
             panic!("No such system");
