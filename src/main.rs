@@ -76,19 +76,21 @@ fn main() {
         angle: angle,
     };
 
-    let config = arustid::Config {
+    let mut config = arustid::Config {
         system: system,
         iterations: iterations,
         length: length,
-        output_filename: String::from("output.png"),
+        output_filename: None,
     };
 
+    let mut mode = "window";
+
     if matches.is_present("output") {
-        let output_filename = matches.value_of("output").unwrap();
-        println!("Creating image: {}", output_filename);
+        config.output_filename = Some(String::from(matches.value_of("output").unwrap()));
+        mode = "image";
     }
 
-    if let Err(err) = arustid::run(config) {
+    if let Err(err) = arustid::run(mode, config) {
         println!("Application error: {}", err);
         process::exit(1);
     }

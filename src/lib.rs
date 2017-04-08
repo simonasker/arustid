@@ -17,20 +17,28 @@ pub struct Config {
     pub system: lsystem::LSystem,
     pub iterations: u32,
     pub length: i32,
-    pub output_filename: String,
+    pub output_filename: Option<String>,
 }
 
-pub fn run(config: Config) -> Result<(), &'static str> {
+pub fn run(mode: &str, config: Config) -> Result<(), &'static str> {
+    // TODO These modes should be handled as an enum
+    match mode {
+        "window" => {
+            let _ = render_to_window(config);
+        },
+        "image" => {
+            let _ = render_to_image(config);
+        },
+        _ => panic!("No such mode"),
+    }
+
+    Ok(())
+}
+
+fn render_to_window(config: Config) -> Result<(), &'static str> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
-
     let (width, height, start_x, start_y) = calculate_dimensions(&sequence, config.length, system.angle);
-
-
-    // RENDERING STUFF STARTS HERE ===============================================================
-
-    // DRAW TO A WINDOW --------------------------------------------------------------------------
-
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem.window("arustid", width as u32, height as u32)
@@ -42,19 +50,11 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     renderer.set_draw_color(Color::RGB(255, 255, 255));
     renderer.clear();
 
-    // DRAW TO AN IMAGE --------------------------------------------------------------------------
-
-    // ===========================================================================================
-
     {
         let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270, config.length);
         turtle.set_renderer(&mut renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
-
-    // MORE RENDERING STUFF ======================================================================
-
-    // DRAW TO A WINDOW --------------------------------------------------------------------------
 
     renderer.present();
     let mut event_pump = sdl_context.event_pump().unwrap();
@@ -69,19 +69,14 @@ pub fn run(config: Config) -> Result<(), &'static str> {
         }
     }
 
-    // DRAW TO AN IMAGE --------------------------------------------------------------------------
-
-    // ===========================================================================================
-
     Ok(())
 }
 
-pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
+fn render_to_image(config: Config) -> Result<(), &'static str> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
+    let (width, height, start_x, start_y) = calculate_dimensions(&sequence, config.length, system.angle);
 
-    let width = 1000;
-    let height = 1000;
     let surface = Surface::new(width as u32,
                                height as u32,
                                sdl2::pixels::PixelFormatEnum::RGB888)
@@ -91,13 +86,14 @@ pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
     surface_renderer.clear();
 
     {
-        let mut turtle = turtle::Turtle::new(Point::new(500, 1000), 270, config.length);
+        let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270, config.length);
         turtle.set_renderer(&mut surface_renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
 
     let surface = surface_renderer.into_surface().unwrap();
-    surface.save(Path::new(&config.output_filename)).unwrap();
+    let filename = config.output_filename.unwrap();
+    surface.save(Path::new(&filename)).unwrap();
 
     Ok(())
 }
