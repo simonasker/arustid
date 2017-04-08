@@ -44,6 +44,12 @@ fn main() {
              .value_name("N")
              .help("Number of iterations to run")
              .takes_value(true))
+        .arg(Arg::with_name("length")
+             .short("l")
+             .long("length")
+             .value_name("LENGTH")
+             .help("The length of each line segment")
+             .takes_value(true))
         .get_matches();
 
     // TODO Use something like this to get pre-defined system
@@ -51,6 +57,8 @@ fn main() {
     // let system = lsystem::get_system(&config.mode);
 
     let iterations: u32 = matches.value_of("iterations").unwrap_or("0").parse().unwrap();
+    // TODO For some reason the image is distorted if this value is not divisible by two
+    let length: i32 = matches.value_of("length").unwrap_or("10").parse().unwrap();
 
     let axiom = String::from(matches.value_of("axiom").expect("No axiom chosen"));
     let angle: i32 = matches.value_of("angle").expect("No angle chosen").parse().unwrap();
@@ -65,6 +73,7 @@ fn main() {
     let config = arustid::Config {
         system: system,
         iterations: iterations,
+        length: length,
         output_filename: String::from("output.png"),
     };
 

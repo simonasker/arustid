@@ -6,7 +6,6 @@ use sdl2::render::Renderer;
 
 use geom;
 
-const SEGMENT_LENGTH: i32 = 4;
 const START_WIDTH: i32 = 0;
 const WIDTH_DELTA: i32 = 0;
 
@@ -14,6 +13,7 @@ pub struct Turtle<'a> {
     renderer: Option<&'a Renderer<'a>>,
     position: Point,
     angle: i32,
+    length: i32,
     width: i32,
     stack: Vec<(Point, i32, i32)>,
     path: Vec<Point>,
@@ -21,11 +21,12 @@ pub struct Turtle<'a> {
 
 
 impl<'a> Turtle<'a> {
-    pub fn new(position: Point, angle: i32) -> Turtle<'a> {
+    pub fn new(position: Point, angle: i32, length: i32) -> Turtle<'a> {
         Turtle {
             renderer: None,
             position: position,
             angle: angle,
+            length: length,
             width: START_WIDTH,
             stack: Vec::new(),
             path: vec![position],
@@ -94,10 +95,11 @@ impl<'a> Turtle<'a> {
     }
 
     pub fn process_sequence(&mut self, sequence: &str, angle: i32) {
+        let length = self.length;
         for c in sequence.chars() {
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
-                    self.move_forward(SEGMENT_LENGTH);
+                    self.move_forward(length);
                 }
                 '+' => {
                     self.turn(-angle);

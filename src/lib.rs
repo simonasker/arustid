@@ -16,6 +16,7 @@ use std::path::Path;
 pub struct Config {
     pub system: lsystem::LSystem,
     pub iterations: u32,
+    pub length: i32,
     pub output_filename: String,
 }
 
@@ -30,7 +31,7 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     let (min_x, max_x, min_y, max_y);
 
     {
-        let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270);
+        let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270, config.length);
         turtle.process_sequence(&sequence, system.angle);
         let limits = geom::find_limits(turtle.get_path());
         min_x = limits.0;
@@ -56,7 +57,7 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     renderer.clear();
 
     {
-        let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270);
+        let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270, config.length);
         turtle.set_renderer(&mut renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
@@ -92,7 +93,7 @@ pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
     surface_renderer.clear();
 
     {
-        let mut turtle = turtle::Turtle::new(Point::new(500, 1000), 270);
+        let mut turtle = turtle::Turtle::new(Point::new(500, 1000), 270, config.length);
         turtle.set_renderer(&mut surface_renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
