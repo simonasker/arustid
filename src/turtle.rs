@@ -6,9 +6,9 @@ use sdl2::render::Renderer;
 
 use geom;
 
-const SEGMENT_LENGTH: i32 = 16;
-const START_WIDTH: i32 = 4;
-const WIDTH_DELTA: i32 = 2;
+const SEGMENT_LENGTH: i32 = 4;
+const START_WIDTH: i32 = 0;
+const WIDTH_DELTA: i32 = 0;
 
 pub struct Turtle<'a> {
     renderer: Option<&'a Renderer<'a>>,

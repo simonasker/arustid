@@ -111,11 +111,22 @@ pub fn get_system(name: &str) -> LSystem {
                 angle: 25,
             }
         }
+        "kochisland" => {
+            LSystem {
+                axiom: String::from("F-F-F-F"),
+                rules: vec![Rule::new('F', "F-F+F+FF-F-F+F")],
+                angle: 90,
+            }
+        }
         "custom" => {
             LSystem {
-                axiom: String::from("+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F+F"),
-                rules: vec![Rule::new('X', "F(+X)F(-X)+X"), Rule::new('F', "FF")],
-                angle: 20,
+                axiom: String::from("F-F-F-F"),
+                // rules: vec![Rule::new('F', "FF+F-F+FF")], // Never increases
+                // rules: vec![Rule::new('F', "F-F+F+F-F-F+F")], // Nice island
+                rules: vec![Rule::new('F', "FF-F--FF-F")], // Pretty awsome, run with 4
+                // rules: vec![Rule::new('F', "F-FF-F--F")], // Kind of neat
+                // rules: vec![Rule::new('F', "F+F--F+F")], // Clean
+                angle: 90,
             }
         }
         _ => {
