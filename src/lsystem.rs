@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub struct Rule {
     pub predecessor: char,
     pub successor: String,
@@ -9,6 +10,25 @@ impl Rule {
             predecessor: predecessor,
             successor: String::from(successor),
         }
+    }
+
+    pub fn from_string(string: &str) -> Result<Rule, &'static str> {
+        let mut split = string.splitn(2, ':');
+
+        let pred = match split.next() {
+            Some(s) => s.chars().nth(0).unwrap(),
+            None => return Err("No predecessor"),
+        };
+
+        let succ = match split.next() {
+            Some(s) => String::from(s),
+            None => return Err("No successor"),
+        };
+
+        Ok(Rule {
+            predecessor: pred,
+            successor: succ,
+        })
     }
 }
 

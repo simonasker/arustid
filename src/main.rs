@@ -30,6 +30,14 @@ fn main() {
              .value_name("ANGLE")
              .help("The angle to turn")
              .takes_value(true))
+        .arg(Arg::with_name("rule")
+             .short("r")
+             .long("rule")
+             .value_name("RULE")
+             .help("A production rule")
+             .multiple(true)
+             .number_of_values(1)
+             .takes_value(true))
         .arg(Arg::with_name("iterations")
              .short("n")
              .long("iterations")
@@ -46,10 +54,11 @@ fn main() {
 
     let axiom = String::from(matches.value_of("axiom").expect("No axiom chosen"));
     let angle: i32 = matches.value_of("angle").expect("No angle chosen").parse().unwrap();
+    let rules: Vec<Rule> = matches.values_of("rule").unwrap().map(|s| Rule::from_string(s).unwrap()).collect();
 
     let system = LSystem {
         axiom: axiom,
-        rules: vec![Rule::new('F', "FFF")],
+        rules: rules,
         angle: angle,
     };
 
