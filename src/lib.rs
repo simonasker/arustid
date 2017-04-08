@@ -11,30 +11,12 @@ use sdl2::keyboard::Keycode;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::surface::Surface;
-use std::env;
 use std::path::Path;
 
 pub struct Config {
-    mode: String,
-    iterations: u32,
-    output_filename: String,
-}
-
-impl Config {
-    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
-        args.next();
-
-        let mode = args.next().unwrap_or(String::from(""));
-
-        let iterations = args.next().unwrap_or(String::from("1"));
-        let iterations = iterations.parse::<u32>().unwrap();
-
-        Ok(Config {
-               mode: mode,
-               iterations: iterations,
-               output_filename: String::from("output.png"),
-           })
-    }
+    pub mode: String,
+    pub iterations: u32,
+    pub output_filename: String,
 }
 
 pub fn run(config: Config) -> Result<(), &'static str> {
