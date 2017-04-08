@@ -2,7 +2,7 @@ extern crate sdl2;
 
 mod turtle;
 mod geom;
-mod lsystem;
+pub mod lsystem;
 
 use sdl2::event::Event;
 use sdl2::image::SaveSurface;
@@ -14,7 +14,7 @@ use sdl2::surface::Surface;
 use std::path::Path;
 
 pub struct Config {
-    pub mode: String,
+    pub system: lsystem::LSystem,
     pub iterations: u32,
     pub output_filename: String,
 }
@@ -24,7 +24,7 @@ pub fn run(config: Config) -> Result<(), &'static str> {
 }
 
 pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
-    let system = lsystem::get_system(&config.mode);
+    let system = config.system;
     let sequence = system.generate(config.iterations);
 
     let (min_x, max_x, min_y, max_y);
@@ -46,7 +46,7 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     let start_y = 0 - min_y + margin;
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
-    let window = video_subsystem.window("Arustid", width as u32, height as u32)
+    let window = video_subsystem.window("arustid", width as u32, height as u32)
         .position_centered()
         .opengl()
         .build()
@@ -78,7 +78,7 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
 }
 
 pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
-    let system = lsystem::get_system(&config.mode);
+    let system = config.system;
     let sequence = system.generate(config.iterations);
 
     let width = 1000;
