@@ -50,6 +50,12 @@ fn main() {
              .value_name("LENGTH")
              .help("The length of each line segment")
              .takes_value(true))
+        .arg(Arg::with_name("output")
+             .short("o")
+             .long("output")
+             .value_name("FILE")
+             .help("The ouput file name")
+             .takes_value(true))
         .get_matches();
 
     // TODO Use something like this to get pre-defined system
@@ -76,6 +82,11 @@ fn main() {
         length: length,
         output_filename: String::from("output.png"),
     };
+
+    if matches.is_present("output") {
+        let output_filename = matches.value_of("output").unwrap();
+        println!("Creating image: {}", output_filename);
+    }
 
     if let Err(err) = arustid::run(config) {
         println!("Application error: {}", err);
