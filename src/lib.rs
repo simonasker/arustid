@@ -21,10 +21,6 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> Result<(), &'static str> {
-    draw_to_window(config)
-}
-
-pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
 
@@ -45,6 +41,11 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     let height = max_y - min_y + 2 * margin;
     let start_x = 0 - min_x + margin;
     let start_y = 0 - min_y + margin;
+
+    // RENDERING STUFF STARTS HERE ===============================================================
+
+    // DRAW TO A WINDOW --------------------------------------------------------------------------
+
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem.window("arustid", width as u32, height as u32)
@@ -56,11 +57,19 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
     renderer.set_draw_color(Color::RGB(255, 255, 255));
     renderer.clear();
 
+    // DRAW TO AN IMAGE --------------------------------------------------------------------------
+
+    // ===========================================================================================
+
     {
         let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270, config.length);
         turtle.set_renderer(&mut renderer);
         turtle.process_sequence(&sequence, system.angle);
     }
+
+    // MORE RENDERING STUFF ======================================================================
+
+    // DRAW TO A WINDOW --------------------------------------------------------------------------
 
     renderer.present();
     let mut event_pump = sdl_context.event_pump().unwrap();
@@ -74,6 +83,10 @@ pub fn draw_to_window(config: Config) -> Result<(), &'static str> {
             }
         }
     }
+
+    // DRAW TO AN IMAGE --------------------------------------------------------------------------
+
+    // ===========================================================================================
 
     Ok(())
 }
