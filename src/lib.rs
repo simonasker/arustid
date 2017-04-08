@@ -24,23 +24,8 @@ pub fn run(config: Config) -> Result<(), &'static str> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
 
-    let (min_x, max_x, min_y, max_y);
+    let (width, height, start_x, start_y) = calculate_dimensions(&sequence, config.length, system.angle);
 
-    {
-        let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270, config.length);
-        turtle.process_sequence(&sequence, system.angle);
-        let limits = geom::find_limits(turtle.get_path());
-        min_x = limits.0;
-        max_x = limits.1;
-        min_y = limits.2;
-        max_y = limits.3;
-    }
-
-    let margin = 20;
-    let width = max_x - min_x + 2 * margin;
-    let height = max_y - min_y + 2 * margin;
-    let start_x = 0 - min_x + margin;
-    let start_y = 0 - min_y + margin;
 
     // RENDERING STUFF STARTS HERE ===============================================================
 
@@ -115,4 +100,18 @@ pub fn draw_to_image(config: Config) -> Result<(), &'static str> {
     surface.save(Path::new(&config.output_filename)).unwrap();
 
     Ok(())
+}
+
+pub fn calculate_dimensions(sequence: &str, length: i32, angle: i32) -> (i32, i32, i32, i32) {
+    let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270, length);
+    turtle.process_sequence(&sequence, angle);
+    let (min_x, max_x, min_y, max_y)  = geom::find_limits(turtle.get_path());
+
+    let margin = 20;
+    let width = max_x - min_x + 2 * margin;
+    let height = max_y - min_y + 2 * margin;
+    let start_x = 0 - min_x + margin;
+    let start_y = 0 - min_y + margin;
+
+    (width, height, start_x, start_y)
 }
