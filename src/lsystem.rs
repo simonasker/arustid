@@ -68,13 +68,6 @@ impl LSystem {
 
 pub fn get_system(name: &str) -> LSystem {
     match name {
-        "turtle" => {
-            LSystem {
-                axiom: String::from("F"),
-                rules: vec![],
-                angle: 45,
-            }
-        }
         "koch" => {
             LSystem {
                 axiom: String::from("F"),
@@ -110,42 +103,10 @@ pub fn get_system(name: &str) -> LSystem {
                 angle: 60,
             }
         }
-        "pythagora" => {
-            LSystem {
-                axiom: String::from("0"),
-                rules: vec![Rule::new('1', "11"), Rule::new('0', "1[0]0")],
-                angle: 60,
-            }
-        }
-        "plant" => {
-            LSystem {
-                axiom: String::from("X"),
-                rules: vec![Rule::new('X', "F-((X)+X)+F(+FX)-X"), Rule::new('F', "FF")],
-                angle: 25,
-            }
-        }
-        "plant2" => {
-            LSystem {
-                axiom: String::from("X"),
-                rules: vec![Rule::new('X', "F(+X)(-X)FX"), Rule::new('F', "FF")],
-                angle: 25,
-            }
-        }
         "kochisland" => {
             LSystem {
                 axiom: String::from("F-F-F-F"),
                 rules: vec![Rule::new('F', "F-F+F+FF-F-F+F")],
-                angle: 90,
-            }
-        }
-        "custom" => {
-            LSystem {
-                axiom: String::from("F-F-F-F"),
-                // rules: vec![Rule::new('F', "FF+F-F+FF")], // Never increases
-                // rules: vec![Rule::new('F', "F-F+F+F-F-F+F")], // Nice island
-                rules: vec![Rule::new('F', "FF-F--FF-F")], // Pretty awsome, run with 4
-                // rules: vec![Rule::new('F', "F-FF-F--F")], // Kind of neat
-                // rules: vec![Rule::new('F', "F+F--F+F")], // Clean
                 angle: 90,
             }
         }
