@@ -13,6 +13,8 @@ use sdl2::rect::Point;
 use sdl2::surface::Surface;
 use std::path::Path;
 
+const MARGIN: i32 = 20;
+
 pub struct Config {
     pub system: lsystem::LSystem,
     pub iterations: u32,
@@ -103,7 +105,7 @@ pub fn calculate_dimensions(sequence: &str, length: i32, angle: i32) -> (i32, i3
     turtle.process_sequence(&sequence, angle);
     let (min_x, max_x, min_y, max_y)  = geom::find_limits(turtle.get_path());
 
-    let margin = 20;
+    let margin = MARGIN;
     let width = max_x - min_x + 2 * margin;
     let height = max_y - min_y + 2 * margin;
     let start_x = 0 - min_x + margin;
