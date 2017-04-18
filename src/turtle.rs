@@ -1,9 +1,10 @@
+
+
+use geom;
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
 use sdl2::render::Renderer;
-
-use geom;
 
 pub struct Turtle<'a> {
     renderer: Option<&'a Renderer<'a>>,
@@ -38,12 +39,11 @@ impl<'a> Turtle<'a> {
     fn draw_line(&mut self, p1: Point, p2: Point) {
         // TODO Handle this result better
         if let Some(renderer) = self.renderer {
-            renderer
-                .aa_line(p1.x as i16,
-                         p1.y as i16,
-                         p2.x as i16,
-                         p2.y as i16,
-                         Color::RGB(0, 0, 0))
+            renderer.aa_line(p1.x as i16,
+                             p1.y as i16,
+                             p2.x as i16,
+                             p2.y as i16,
+                             Color::RGB(0, 0, 0))
                 .unwrap();
         }
     }

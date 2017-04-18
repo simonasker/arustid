@@ -26,9 +26,9 @@ impl Rule {
         };
 
         Ok(Rule {
-            predecessor: pred,
-            successor: succ,
-        })
+               predecessor: pred,
+               successor: succ,
+           })
     }
 }
 

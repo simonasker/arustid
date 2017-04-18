@@ -27,10 +27,10 @@ pub fn run(mode: &str, config: Config) -> Result<(), &'static str> {
     match mode {
         "window" => {
             let _ = render_to_window(config);
-        },
+        }
         "image" => {
             let _ = render_to_image(config);
-        },
+        }
         _ => panic!("No such mode"),
     }
 
@@ -40,7 +40,8 @@ pub fn run(mode: &str, config: Config) -> Result<(), &'static str> {
 fn render_to_window(config: Config) -> Result<(), &'static str> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
-    let (width, height, start_x, start_y) = calculate_dimensions(&sequence, config.length, system.angle);
+    let (width, height, start_x, start_y) =
+        calculate_dimensions(&sequence, config.length, system.angle);
     let sdl_context = sdl2::init().unwrap();
     let video_subsystem = sdl_context.video().unwrap();
     let window = video_subsystem.window("arustid", width as u32, height as u32)
@@ -77,7 +78,8 @@ fn render_to_window(config: Config) -> Result<(), &'static str> {
 fn render_to_image(config: Config) -> Result<(), &'static str> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
-    let (width, height, start_x, start_y) = calculate_dimensions(&sequence, config.length, system.angle);
+    let (width, height, start_x, start_y) =
+        calculate_dimensions(&sequence, config.length, system.angle);
 
     let surface = Surface::new(width as u32,
                                height as u32,
@@ -103,7 +105,7 @@ fn render_to_image(config: Config) -> Result<(), &'static str> {
 pub fn calculate_dimensions(sequence: &str, length: i32, angle: i32) -> (i32, i32, i32, i32) {
     let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270, length);
     turtle.process_sequence(&sequence, angle);
-    let (min_x, max_x, min_y, max_y)  = geom::find_limits(turtle.get_path());
+    let (min_x, max_x, min_y, max_y) = geom::find_limits(turtle.get_path());
 
     let margin = MARGIN;
     let width = max_x - min_x + 2 * margin;
