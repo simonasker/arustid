@@ -1,4 +1,3 @@
-
 use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::pixels::Color;
 use sdl2::rect::Point;
@@ -6,16 +5,12 @@ use sdl2::render::Renderer;
 
 use geom;
 
-const START_WIDTH: i32 = 0;
-const WIDTH_DELTA: i32 = 0;
-
 pub struct Turtle<'a> {
     renderer: Option<&'a Renderer<'a>>,
     position: Point,
     angle: i32,
     length: i32,
-    width: i32,
-    stack: Vec<(Point, i32, i32)>,
+    stack: Vec<(Point, i32)>,
     path: Vec<Point>,
 }
 
@@ -27,7 +22,6 @@ impl<'a> Turtle<'a> {
             position: position,
             angle: angle,
             length: length,
-            width: START_WIDTH,
             stack: Vec::new(),
             path: vec![position],
         }
@@ -75,17 +69,10 @@ impl<'a> Turtle<'a> {
         self.angle = new_angle;
     }
 
-    fn shrink(&mut self) {
-        self.width -= WIDTH_DELTA;
-        if self.width < 0 {
-            self.width = 0;
-        }
-    }
-
     pub fn process_sequence(&mut self, sequence: &str, angle: i32) {
         for c in sequence.chars() {
             match c {
-                'F' | 'G' | 'A' | 'B' | '1' | '0' => {
+                'F' | 'G' => {
                     self.move_forward();
                 }
                 '+' => {
@@ -95,30 +82,13 @@ impl<'a> Turtle<'a> {
                     self.turn(angle);
                 }
                 '[' => {
-                    self.stack.push((self.position.clone(), self.angle.clone(), self.width.clone()));
-                    self.turn(-angle);
-                    self.shrink();
+                    self.stack.push((self.position.clone(), self.angle.clone()));
                 }
                 ']' => {
-                    // TODO Dangerous unwrap
-                    let (old_position, old_angle, old_width) = self.stack.pop().unwrap();
+                    // TODO Potentially dangerous unwrap
+                    let (old_position, old_angle) = self.stack.pop().unwrap();
                     self.position = old_position;
                     self.angle = old_angle;
-                    self.width = old_width;
-                    self.turn(angle);
-                    self.shrink();
-                }
-                '(' => {
-                    self.stack.push((self.position.clone(), self.angle.clone(), self.width.clone()));
-                    self.shrink();
-                }
-                ')' => {
-                    // TODO Dangerous unwrap
-                    let (old_position, old_angle, old_width) = self.stack.pop().unwrap();
-                    self.position = old_position;
-                    self.angle = old_angle;
-                    self.width = old_width;
-                    self.shrink();
                 }
                 _ => {}
             }
