@@ -54,9 +54,9 @@ impl<'a> Turtle<'a> {
         }
     }
 
-    fn move_forward(&mut self, steps: i32) {
+    fn move_forward(&mut self) {
         let p1 = self.position;
-        let p2 = geom::get_endpoint(p1, self.angle, steps);
+        let p2 = geom::get_endpoint(p1, self.angle, self.length);
         self.draw_line(p1, p2);
         self.position = p2;
         self.path.push(self.position);
@@ -83,11 +83,10 @@ impl<'a> Turtle<'a> {
     }
 
     pub fn process_sequence(&mut self, sequence: &str, angle: i32) {
-        let length = self.length;
         for c in sequence.chars() {
             match c {
                 'F' | 'G' | 'A' | 'B' | '1' | '0' => {
-                    self.move_forward(length);
+                    self.move_forward();
                 }
                 '+' => {
                     self.turn(-angle);
