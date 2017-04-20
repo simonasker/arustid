@@ -2,13 +2,17 @@ extern crate arustid;
 #[macro_use]
 extern crate clap;
 
+use arustid::Config;
 use arustid::lsystem::{LSystem, Rule};
 
 use clap::{Arg, App};
 use std::process;
+use std::error::Error;
 
-fn main() {
-    let matches = App::new("arustid")
+type Mode = String;
+
+fn create_app() -> App<'static, 'static> {
+    App::new("arustid")
         .version(crate_version!())
         .about(crate_description!())
         .author(crate_authors!())
@@ -56,7 +60,12 @@ fn main() {
                  .value_name("FILE")
                  .help("The ouput file name")
                  .takes_value(true))
-        .get_matches();
+}
+
+fn parse_args() -> Result<(Mode, Config), Box<Error>> {
+    let app = create_app();
+
+    let matches = app.get_matches();
 
     let iterations: u32 = matches.value_of("iterations")
         .unwrap_or("0")
@@ -92,14 +101,22 @@ fn main() {
         output_filename: None,
     };
 
-    let mut mode = "window";
+    let mut mode = String::from("window");
 
     if matches.is_present("output") {
         config.output_filename = Some(String::from(matches.value_of("output").unwrap()));
-        mode = "image";
+        mode = String::from("image");
     }
 
-    if let Err(err) = arustid::run(mode, config) {
+    Ok((mode, config))
+}
+
+fn main() {
+
+    let (mode, config) = parse_args().unwrap();
+
+
+    if let Err(err) = arustid::run(&mode, config) {
         println!("Application error: {}", err);
         process::exit(1);
     }
