@@ -1,3 +1,5 @@
+use std::error::Error;
+
 #[derive(Debug)]
 pub struct Rule {
     pub predecessor: char,
@@ -12,17 +14,17 @@ impl Rule {
         }
     }
 
-    pub fn from_string(string: &str) -> Result<Rule, &'static str> {
+    pub fn from_string(string: &str) -> Result<Rule, Box<Error>> {
         let mut split = string.splitn(2, ':');
 
         let pred = match split.next() {
-            Some(s) => s.chars().nth(0).unwrap(),
-            None => return Err("No predecessor"),
+            Some(s) => s.chars().nth(0).ok_or("No predecessor")?,
+            None => return Err(From::from("No predecessor")),
         };
 
         let succ = match split.next() {
             Some(s) => String::from(s),
-            None => return Err("No successor"),
+            None => return Err(From::from("No successor")),
         };
 
         Ok(Rule {
