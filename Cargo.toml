@@ -2,6 +2,7 @@
 name = "arustid"
 version = "0.1.0"
 authors = ["Simon Andersson <simon.asker@posteo.net>"]
+description = "Generates fractals based on L-Systems using Turtle graphics"
 
 [dependencies]
 clap = "2.23"

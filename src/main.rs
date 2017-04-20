@@ -1,6 +1,6 @@
 extern crate arustid;
+#[macro_use]
 extern crate clap;
-
 
 use arustid::lsystem::{LSystem, Rule};
 
@@ -9,9 +9,9 @@ use std::process;
 
 fn main() {
     let matches = App::new("arustid")
-        .version("0.1.0")
-        .about("Draws L-Systems")
-        .author("Simon Andersson <simonasker@posteo.net>")
+        .version(crate_version!())
+        .about(crate_description!())
+        .author(crate_authors!())
         .arg(Arg::with_name("system")
                  .short("s")
                  .long("system")
