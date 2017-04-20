@@ -43,7 +43,7 @@ fn render_to_window(config: Config) -> Result<(), Box<Error>> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
     let (width, height, start_x, start_y) =
-        calculate_dimensions(&sequence, config.length, system.angle);
+        calculate_dimensions(&sequence, config.length, system.angle)?;
     let sdl_context = sdl2::init()?;
     let video_subsystem = sdl_context.video()?;
     let window = video_subsystem.window("arustid", width as u32, height as u32)
@@ -57,7 +57,7 @@ fn render_to_window(config: Config) -> Result<(), Box<Error>> {
     {
         let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270, config.length);
         turtle.set_renderer(&mut renderer);
-        turtle.process_sequence(&sequence, system.angle);
+        turtle.process_sequence(&sequence, system.angle)?;
     }
 
     renderer.present();
@@ -80,7 +80,7 @@ fn render_to_image(config: Config) -> Result<(), Box<Error>> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
     let (width, height, start_x, start_y) =
-        calculate_dimensions(&sequence, config.length, system.angle);
+        calculate_dimensions(&sequence, config.length, system.angle)?;
 
     let surface = Surface::new(width as u32,
                                height as u32,
@@ -92,7 +92,7 @@ fn render_to_image(config: Config) -> Result<(), Box<Error>> {
     {
         let mut turtle = turtle::Turtle::new(Point::new(start_x, start_y), 270, config.length);
         turtle.set_renderer(&mut surface_renderer);
-        turtle.process_sequence(&sequence, system.angle);
+        turtle.process_sequence(&sequence, system.angle)?;
     }
 
     let surface = surface_renderer.into_surface().ok_or("No surface")?;
@@ -106,9 +106,9 @@ fn render_to_image(config: Config) -> Result<(), Box<Error>> {
     Ok(())
 }
 
-pub fn calculate_dimensions(sequence: &str, length: i32, angle: i32) -> (i32, i32, i32, i32) {
+pub fn calculate_dimensions(sequence: &str, length: i32, angle: i32) -> Result<(i32, i32, i32, i32), Box<Error>> {
     let mut turtle = turtle::Turtle::new(Point::new(0, 0), 270, length);
-    turtle.process_sequence(&sequence, angle);
+    turtle.process_sequence(&sequence, angle)?;
     let (min_x, max_x, min_y, max_y) = geom::find_limits(turtle.get_path());
 
     let margin = MARGIN;
@@ -117,5 +117,5 @@ pub fn calculate_dimensions(sequence: &str, length: i32, angle: i32) -> (i32, i3
     let start_x = 0 - min_x + margin;
     let start_y = 0 - min_y + margin;
 
-    (width, height, start_x, start_y)
+    Ok((width, height, start_x, start_y))
 }
