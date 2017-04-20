@@ -33,6 +33,7 @@ fn create_app() -> App<'static, 'static> {
                  .long("angle")
                  .value_name("ANGLE")
                  .help("The angle to turn")
+                 .default_value("90")
                  .takes_value(true))
         .arg(Arg::with_name("rule")
                  .short("r")
@@ -46,6 +47,7 @@ fn create_app() -> App<'static, 'static> {
                  .short("n")
                  .long("iterations")
                  .value_name("N")
+                 .default_value("0")
                  .help("Number of iterations to run")
                  .takes_value(true))
         .arg(Arg::with_name("length")
@@ -53,6 +55,7 @@ fn create_app() -> App<'static, 'static> {
                  .long("length")
                  .value_name("LENGTH")
                  .help("The length of each line segment")
+                 .default_value("10")
                  .takes_value(true))
         .arg(Arg::with_name("output")
                  .short("o")
@@ -64,29 +67,14 @@ fn create_app() -> App<'static, 'static> {
 
 fn parse_args() -> Result<(Mode, Config), Box<Error>> {
     let app = create_app();
-
     let matches = app.get_matches();
 
-    let iterations: u32 = matches.value_of("iterations")
-        .unwrap_or("0")
-        .parse()
-        .unwrap();
-    // TODO For some reason the image is distorted if this value is not divisible
-    // by two
-    let length: i32 = matches.value_of("length")
-        .unwrap_or("10")
-        .parse()
-        .unwrap();
-
-    let axiom = String::from(matches.value_of("axiom").expect("No axiom chosen"));
-    let angle: i32 = matches.value_of("angle")
-        .expect("No angle chosen")
-        .parse()
-        .unwrap();
-    let rules: Vec<Rule> = matches.values_of("rule")
-        .unwrap()
-        .map(|s| Rule::from_string(s).unwrap())
-        .collect();
+    let angle: i32 = matches.value_of("angle").ok_or("No angle")?.parse()?;
+    let iterations: u32 = matches.value_of("iterations").ok_or("No iterations")?.parse()?;
+    let length: i32 = matches.value_of("length").ok_or("No length")?.parse()?;
+    let axiom = String::from(matches.value_of("axiom").ok_or("No axiom")?);
+    let rules: Vec<Rule> = matches.values_of("rule").ok_or("No rules")?
+        .map(|s| Rule::from_string(s).unwrap()).collect();
 
     let system = LSystem {
         axiom: axiom,
@@ -112,11 +100,14 @@ fn parse_args() -> Result<(Mode, Config), Box<Error>> {
 }
 
 fn main() {
-
-    let (mode, config) = parse_args().unwrap();
-
+    let (mode, config) = parse_args().unwrap_or_else(|err| {
+        // TODO Print this to stderr instead
+        println!("Application error: {}", err);
+        process::exit(1);
+    });
 
     if let Err(err) = arustid::run(&mode, config) {
+        // TODO Print this to stderr instead
         println!("Application error: {}", err);
         process::exit(1);
     }
