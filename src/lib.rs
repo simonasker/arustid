@@ -13,6 +13,8 @@ use sdl2::rect::Point;
 use sdl2::surface::Surface;
 use std::path::Path;
 
+use std::error::Error;
+
 const MARGIN: i32 = 20;
 
 pub struct Config {
@@ -37,19 +39,18 @@ pub fn run(mode: &str, config: Config) -> Result<(), &'static str> {
     Ok(())
 }
 
-fn render_to_window(config: Config) -> Result<(), &'static str> {
+fn render_to_window(config: Config) -> Result<(), Box<Error>> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
     let (width, height, start_x, start_y) =
         calculate_dimensions(&sequence, config.length, system.angle);
-    let sdl_context = sdl2::init().unwrap();
-    let video_subsystem = sdl_context.video().unwrap();
+    let sdl_context = sdl2::init()?;
+    let video_subsystem = sdl_context.video()?;
     let window = video_subsystem.window("arustid", width as u32, height as u32)
         .position_centered()
         .opengl()
-        .build()
-        .unwrap();
-    let mut renderer = window.renderer().build().unwrap();
+        .build()?;
+    let mut renderer = window.renderer().build()?;
     renderer.set_draw_color(Color::RGB(255, 255, 255));
     renderer.clear();
 
@@ -60,7 +61,7 @@ fn render_to_window(config: Config) -> Result<(), &'static str> {
     }
 
     renderer.present();
-    let mut event_pump = sdl_context.event_pump().unwrap();
+    let mut event_pump = sdl_context.event_pump()?;
 
     'running: loop {
         for event in event_pump.poll_iter() {
@@ -75,7 +76,7 @@ fn render_to_window(config: Config) -> Result<(), &'static str> {
     Ok(())
 }
 
-fn render_to_image(config: Config) -> Result<(), &'static str> {
+fn render_to_image(config: Config) -> Result<(), Box<Error>> {
     let system = config.system;
     let sequence = system.generate(config.iterations);
     let (width, height, start_x, start_y) =
@@ -83,9 +84,8 @@ fn render_to_image(config: Config) -> Result<(), &'static str> {
 
     let surface = Surface::new(width as u32,
                                height as u32,
-                               sdl2::pixels::PixelFormatEnum::RGB888)
-            .unwrap();
-    let mut surface_renderer = sdl2::render::Renderer::from_surface(surface).unwrap();
+                               sdl2::pixels::PixelFormatEnum::RGB888)?;
+    let mut surface_renderer = sdl2::render::Renderer::from_surface(surface)?;
     surface_renderer.set_draw_color(Color::RGB(255, 255, 255));
     surface_renderer.clear();
 
@@ -95,9 +95,13 @@ fn render_to_image(config: Config) -> Result<(), &'static str> {
         turtle.process_sequence(&sequence, system.angle);
     }
 
-    let surface = surface_renderer.into_surface().unwrap();
-    let filename = config.output_filename.unwrap();
-    surface.save(Path::new(&filename)).unwrap();
+    let surface = surface_renderer.into_surface().ok_or("No surface")?;
+
+    // TODO There has to be a chainable function for this!
+    match config.output_filename {
+        Some(filename) => surface.save(Path::new(&filename))?,
+        None => return Err(From::from("Hello")),
+    }
 
     Ok(())
 }
