@@ -73,8 +73,10 @@ fn parse_args() -> Result<(Mode, Config), Box<Error>> {
     let iterations: u32 = matches.value_of("iterations").ok_or("No iterations")?.parse()?;
     let length: i32 = matches.value_of("length").ok_or("No length")?.parse()?;
     let axiom = String::from(matches.value_of("axiom").ok_or("No axiom")?);
-    let rules: Vec<Rule> = matches.values_of("rule").ok_or("No rules")?
-        .map(|s| Rule::from_string(s).unwrap()).collect();
+
+    let rules = matches.values_of("rule").ok_or("No rules")?;
+    let rules: Result<Vec<_>, _> = rules.map(|s| Rule::from_string(s)).collect();
+    let rules = rules?;
 
     let system = LSystem {
         axiom: axiom,
