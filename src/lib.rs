@@ -100,11 +100,7 @@ fn render_to_image(config: Config) -> Result<(), Box<Error>> {
 
     let surface = surface_renderer.into_surface().ok_or("No surface")?;
 
-    // TODO There has to be a chainable function for this!
-    match config.output_filename {
-        Some(filename) => surface.save(Path::new(&filename))?,
-        None => return Err(From::from("Hello")),
-    }
+    config.output_filename.map_or(Err(From::from("No filename")), |f| surface.save(Path::new(&f)))?;
 
     Ok(())
 }
