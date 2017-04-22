@@ -1,4 +1,11 @@
 reorder_imports = true
+reorder_imported_names = true
+use_try_shorthand = true
+condensed_wildcard_suffices = true
+normalize_comments = true
 wrap_comments = true
+
+array_layout = "Block"
+fn_call_style = "Block"
+
 write_mode = "Overwrite"
-max_width = 100

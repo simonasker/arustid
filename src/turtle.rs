@@ -37,7 +37,13 @@ impl<'a> Turtle<'a> {
 
     fn draw_line(&mut self, p1: Point, p2: Point) -> Result<(), Box<Error>> {
         if let Some(r) = self.renderer {
-            r.aa_line( p1.x as i16, p1.y as i16, p2.x as i16, p2.y as i16, Color::RGB(0, 0, 0))?;
+            r.aa_line(
+                    p1.x as i16,
+                    p1.y as i16,
+                    p2.x as i16,
+                    p2.y as i16,
+                    Color::RGB(0, 0, 0),
+                )?;
         }
         Ok(())
     }
@@ -76,7 +82,8 @@ impl<'a> Turtle<'a> {
                     self.turn(angle);
                 }
                 '[' => {
-                    self.stack.push((self.position.clone(), self.angle.clone()));
+                    self.stack
+                        .push((self.position.clone(), self.angle.clone()));
                 }
                 ']' => {
                     let (old_position, old_angle) = self.stack.pop().ok_or("Empty stack")?;

@@ -27,10 +27,12 @@ impl Rule {
             None => return Err(From::from("No successor")),
         };
 
-        Ok(Rule {
-               predecessor: pred,
-               successor: succ,
-           })
+        Ok(
+            Rule {
+                predecessor: pred,
+                successor: succ,
+            },
+        )
     }
 }
 
