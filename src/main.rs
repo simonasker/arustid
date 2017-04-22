@@ -8,6 +8,7 @@ use arustid::lsystem::{LSystem, Rule};
 use clap::{Arg, App};
 use std::process;
 use std::error::Error;
+use std::io::prelude::*;
 
 fn create_app() -> App<'static, 'static> {
     App::new("arustid")
@@ -100,15 +101,23 @@ fn parse_args() -> Result<(arustid::Mode, Config), Box<Error>> {
 }
 
 fn main() {
+    let mut stderr = std::io::stderr();
+
     let (mode, config) = parse_args().unwrap_or_else(|err| {
-        // TODO Print this to stderr instead
-        println!("Application error: {}", err);
+        writeln!(
+            &mut stderr,
+            "Problem parsing arguments: {}",
+            err,
+        ).expect("Could not write to stderr");
         process::exit(1);
     });
 
     if let Err(err) = arustid::run(mode, config) {
-        // TODO Print this to stderr instead
-        println!("Application error: {}", err);
+        writeln!(
+            &mut stderr,
+            "Application error: {}",
+            err,
+        ).expect("Could not write to stderr");
         process::exit(1);
     }
 }
