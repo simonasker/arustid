@@ -24,16 +24,19 @@ pub struct Config {
     pub output_filename: Option<String>,
 }
 
-pub fn run(mode: &str, config: Config) -> Result<(), &'static str> {
-    // TODO These modes should be handled as an enum
+pub enum Mode {
+    Window,
+    Image,
+}
+
+pub fn run(mode: Mode, config: Config) -> Result<(), &'static str> {
     match mode {
-        "window" => {
+        Mode::Window => {
             let _ = render_to_window(config);
         }
-        "image" => {
+        Mode::Image => {
             let _ = render_to_image(config);
         }
-        _ => panic!("No such mode"),
     }
 
     Ok(())

@@ -9,8 +9,6 @@ use clap::{Arg, App};
 use std::process;
 use std::error::Error;
 
-type Mode = String;
-
 fn create_app() -> App<'static, 'static> {
     App::new("arustid")
         .version(crate_version!())
@@ -65,7 +63,7 @@ fn create_app() -> App<'static, 'static> {
                  .takes_value(true))
 }
 
-fn parse_args() -> Result<(Mode, Config), Box<Error>> {
+fn parse_args() -> Result<(arustid::Mode, Config), Box<Error>> {
     let app = create_app();
     let matches = app.get_matches();
 
@@ -91,11 +89,11 @@ fn parse_args() -> Result<(Mode, Config), Box<Error>> {
         output_filename: None,
     };
 
-    let mut mode = String::from("window");
+    let mut mode = arustid::Mode::Window;
 
     if matches.is_present("output") {
         config.output_filename = Some(String::from(matches.value_of("output").unwrap()));
-        mode = String::from("image");
+        mode = arustid::Mode::Image;
     }
 
     Ok((mode, config))
@@ -108,7 +106,7 @@ fn main() {
         process::exit(1);
     });
 
-    if let Err(err) = arustid::run(&mode, config) {
+    if let Err(err) = arustid::run(mode, config) {
         // TODO Print this to stderr instead
         println!("Application error: {}", err);
         process::exit(1);
