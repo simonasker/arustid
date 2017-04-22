@@ -52,7 +52,6 @@ impl LSystem {
     pub fn iterate(&self, sequence: String) -> String {
         let mut result = String::new();
         for c in sequence.chars() {
-            // TODO This could probably be nicer
             let mut applied_rule = false;
             for rule in &self.rules {
                 if c == rule.predecessor {

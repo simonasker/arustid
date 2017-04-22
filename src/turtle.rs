@@ -52,7 +52,6 @@ impl<'a> Turtle<'a> {
     }
 
     fn turn(&mut self, angle: i32) {
-        // TODO Can probably be nicer
         let mut new_angle = self.angle + angle;
 
         if new_angle >= 360 {
